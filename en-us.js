@@ -6,3 +6,6 @@ export const errorRiffSize =
   "RIFF chunk specifies invalid size (Expected > 40)";
 export const errorRiffFormat =
   "RIFF chunk specifies invalid format (Expected WAVE)";
+export const errorFormatTruncated = "Format chunk incomplete";
+export const errorFormatId = 'Format chunk id is invalid (Expected "fmt ")';
+export const unknown = "Unknown";

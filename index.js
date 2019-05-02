@@ -1,6 +1,7 @@
 const fs = require("fs");
 
 import { readRiffHeader } from "./read-riff--header.js";
+import { readFormatHeader } from "./read-format-header.js";
 
 export class Reader {
   constructor(file) {
@@ -11,71 +12,7 @@ export class Reader {
   }
 
   readFormat() {
-    return new Promise((resolve, reject) => {
-      const position = 12;
-      const size = 24;
-      const buffer = Buffer.alloc(size);
-      if ("format" in this) {
-        resolve(this.format);
-        return;
-      }
-
-      fs.open(this.file, "r", (openError, fileDescriptor) => {
-        if (openError) {
-          closeAndReject(openError, fileDescriptor);
-        } else {
-          fs.read(
-            fileDescriptor,
-            buffer,
-            0,
-            size,
-            position,
-            (readError, bytesRead) => {
-              if (readError) {
-                closeAndReject(readError, fileDescriptor);
-              } else if (bytesRead < size) {
-                closeAndReject(
-                  new Error("Invalid Format sub-chunk"),
-                  fileDescriptor
-                );
-              } else {
-                this.format = {
-                  id: buffer.toString("ascii", 0, 4),
-                  size: buffer.readInt32LE(4),
-                  type: buffer.readInt16LE(8),
-                  channels: buffer.readInt16LE(10),
-                  sampleRate: buffer.readInt32LE(12),
-                  byteRate: buffer.readInt32LE(16),
-                  blockAlignment: buffer.readInt16LE(20),
-                  bitsPerSample: buffer.readInt16LE(22)
-                };
-                this.format.typeName =
-                  this.format.type === 1 ? "PCM" : "Unknown";
-                closeAndResolve(this.format, fileDescriptor);
-              }
-            }
-          );
-        }
-      });
-      const closeAndReject = (error, fileDescriptor) => {
-        if (fileDescriptor === void 0) {
-          reject(error);
-        } else {
-          fs.close(fileDescriptor, closeError => {
-            reject(error || closeError);
-          });
-        }
-      };
-      const closeAndResolve = (data, fileDescriptor) => {
-        if (fileDescriptor === void 0) {
-          resolve(data);
-        } else {
-          fs.close(fileDescriptor, closeError => {
-            closeError ? reject(closeError) : resolve(data);
-          });
-        }
-      };
-    });
+    return readFormatHeader(this);
   }
   readDataHeader() {
     return new Promise((resolve, reject) => {
