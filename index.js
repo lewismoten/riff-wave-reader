@@ -1,4 +1,6 @@
 const fs = require("fs");
+const util = require("util");
+const read = util.promisify(fs.read);
 
 export class Reader {
   constructor(file) {
@@ -15,50 +17,25 @@ export class Reader {
         if (openError) {
           closeAndReject(openError, fileDescriptor);
         } else {
-          fs.read(
-            fileDescriptor,
-            myBuffer,
-            0,
-            size,
-            position,
-            (readError, bytesRead, buffer) => {
-              if (readError) {
-                closeAndReject(readError, fileDescriptor);
-              } else if (bytesRead < size) {
-                closeAndReject(
-                  new Error("Invalid RIFF chunk descriptor"),
-                  fileDescriptor
-                );
-              } else {
-                const tag = buffer.toString("ascii", 0, 4);
-                if (tag !== "RIFF") {
-                  closeAndReject(
-                    new Error("Invalid RIFF chunk descriptor tag"),
-                    fileDescriptor
-                  );
-                } else {
-                  const size = buffer.readInt32LE(4);
-                  if (size < 40) {
-                    closeAndReject(
-                      new Error("Invalid RIFF chunk descriptor size"),
-                      fileDescriptor
-                    );
-                  } else {
-                    const format = buffer.toString("ascii", 8, 12);
-                    if (format !== "WAVE") {
-                      closeAndReject(
-                        new Error("Invalid RIFF chunk descriptor format"),
-                        fileDescriptor
-                      );
-                    } else {
-                      this.riff = { tag, size, format };
-                      closeAndResolve(this.riff, fileDescriptor);
-                    }
-                  }
-                }
-              }
-            }
-          );
+          read(fileDescriptor, myBuffer, 0, size, position)
+            .then(({ buffer, bytesRead }) => {
+              if (bytesRead < size)
+                throw new Error("Invalid RIFF chunk descriptor");
+              const tag = buffer.toString("ascii", 0, 4);
+              if (tag !== "RIFF")
+                throw new Error("Invalid RIFF chunk descriptor tag");
+              const riffSize = buffer.readInt32LE(4);
+              if (riffSize < 40)
+                throw new Error("Invalid RIFF chunk descriptor size");
+              const format = buffer.toString("ascii", 8, 12);
+              if (format !== "WAVE")
+                throw new Error("Invalid RIFF chunk descriptor format");
+              this.riff = { tag, size: riffSize, format };
+              closeAndResolve(this.riff, fileDescriptor);
+            })
+            .catch(e => {
+              closeAndReject(e, fileDescriptor);
+            });
         }
       });
       const closeAndReject = (error, fileDescriptor) => {
