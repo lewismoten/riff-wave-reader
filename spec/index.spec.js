@@ -1,5 +1,5 @@
 import Reader from "../index.js";
-const path = require("path");
+import path from "path";
 
 const file = path.join(__dirname, "../samples/hello.wav");
 
@@ -28,6 +28,9 @@ describe("riff-wave-reader", () => {
     });
     it("can read size", () => {
       expect(riff.size).toBe(4309);
+    });
+    it("can read format", () => {
+      expect(riff.format).toBe("WAVE");
     });
   });
 });

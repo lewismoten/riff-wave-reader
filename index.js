@@ -1,5 +1,5 @@
 const fs = require("fs");
-const path = require("path");
+// const path = require("path");
 
 export class Reader {
   constructor(file) {
@@ -10,26 +10,6 @@ export class Reader {
       const size = 12;
       const buffer = Buffer.alloc(size);
       delete this.riff;
-      const riff = {};
-
-      const closeAndReject = (error, fileDescriptor) => {
-        if (fileDescriptor === void 0) {
-          reject(error);
-        } else {
-          fs.close(fileDescriptor, closeError => {
-            reject(error);
-          });
-        }
-      };
-      const closeAndResolve = (data, fileDescriptor) => {
-        if (fileDescriptor === void 0) {
-          resolve(data);
-        } else {
-          fs.close(fileDescriptor, closeError => {
-            closeError ? reject(closeError) : resolve(data);
-          });
-        }
-      };
 
       fs.open(this.file, "r", (openError, fileDescriptor) => {
         if (openError) {
@@ -50,14 +30,35 @@ export class Reader {
                   fileDescriptor
                 );
               } else {
-                riff.tag = buffer.toString("ascii", 0, 4);
-                riff.size = buffer.readInt32LE(4);
-                closeAndResolve((this.riff = riff), fileDescriptor);
+                this.riff = {
+                  tag: buffer.toString("ascii", 0, 4),
+                  size: buffer.readInt32LE(4),
+                  format: buffer.toString("ascii", 8, 12)
+                };
+                closeAndResolve(this.riff, fileDescriptor);
               }
             }
           );
         }
       });
+      const closeAndReject = (error, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          reject(error);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            reject(error || closeError);
+          });
+        }
+      };
+      const closeAndResolve = (data, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          resolve(data);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            closeError ? reject(closeError) : resolve(data);
+          });
+        }
+      };
     });
   }
 }
