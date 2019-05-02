@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/lewismoten/riff-wave-reader/issues"
   },
-  "homepage": "https://github.com/lewismoten/riff-wave-reader#readme"
+  "homepage": "https://github.com/lewismoten/riff-wave-reader#readme",
+  "devDependencies": {
+    "jasmine": "^3.4.0"
+  }
 }
