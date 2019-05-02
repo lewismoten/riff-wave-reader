@@ -31,12 +31,32 @@ export class Reader {
                   fileDescriptor
                 );
               } else {
-                this.riff = {
-                  tag: buffer.toString("ascii", 0, 4),
-                  size: buffer.readInt32LE(4),
-                  format: buffer.toString("ascii", 8, 12)
-                };
-                closeAndResolve(this.riff, fileDescriptor);
+                const tag = buffer.toString("ascii", 0, 4);
+                if (tag !== "RIFF") {
+                  closeAndReject(
+                    new Error("Invalid RIFF chunk descriptor tag"),
+                    fileDescriptor
+                  );
+                } else {
+                  const size = buffer.readInt32LE(4);
+                  if (size < 40) {
+                    closeAndReject(
+                      new Error("Invalid RIFF chunk descriptor size"),
+                      fileDescriptor
+                    );
+                  } else {
+                    const format = buffer.toString("ascii", 8, 12);
+                    if (format !== "WAVE") {
+                      closeAndReject(
+                        new Error("Invalid RIFF chunk descriptor format"),
+                        fileDescriptor
+                      );
+                    } else {
+                      this.riff = { tag, size, format };
+                      closeAndResolve(this.riff, fileDescriptor);
+                    }
+                  }
+                }
               }
             }
           );
