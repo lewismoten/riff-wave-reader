@@ -11,7 +11,7 @@ describe("riff-wave-reader", () => {
     const reader = new Reader();
     expect(typeof reader).toBe("object");
   });
-  describe("RIFF Header", () => {
+  describe("RIFF Chunk", () => {
     let reader;
     let riff;
     beforeAll(done => {
@@ -31,6 +31,22 @@ describe("riff-wave-reader", () => {
     });
     it("can read format", () => {
       expect(riff.format).toBe("WAVE");
+    });
+  });
+  describe("Format Chunk", () => {
+    let reader;
+    let riff;
+    beforeAll(done => {
+      reader = new Reader(file);
+      reader
+        .readFormat()
+        .then(result => {
+          riff = result;
+        })
+        .then(done);
+    });
+    it("can read id", () => {
+      expect(riff.id).toBe("fmt ");
     });
   });
 });

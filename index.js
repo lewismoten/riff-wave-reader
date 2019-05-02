@@ -7,6 +7,7 @@ export class Reader {
   }
   readRiff() {
     return new Promise((resolve, reject) => {
+      const position = 0;
       const size = 12;
       const buffer = Buffer.alloc(size);
       delete this.riff;
@@ -20,13 +21,13 @@ export class Reader {
             buffer,
             0,
             size,
-            null,
+            position,
             (readError, bytesRead) => {
               if (readError) {
                 closeAndReject(readError, fileDescriptor);
               } else if (bytesRead < size) {
                 closeAndReject(
-                  new Error("Invalid RIFF header"),
+                  new Error("Invalid RIFF chunk descriptor"),
                   fileDescriptor
                 );
               } else {
@@ -36,6 +37,61 @@ export class Reader {
                   format: buffer.toString("ascii", 8, 12)
                 };
                 closeAndResolve(this.riff, fileDescriptor);
+              }
+            }
+          );
+        }
+      });
+      const closeAndReject = (error, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          reject(error);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            reject(error || closeError);
+          });
+        }
+      };
+      const closeAndResolve = (data, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          resolve(data);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            closeError ? reject(closeError) : resolve(data);
+          });
+        }
+      };
+    });
+  }
+  readFormat() {
+    return new Promise((resolve, reject) => {
+      const position = 12;
+      const size = 40;
+      const buffer = Buffer.alloc(size);
+      delete this.format;
+
+      fs.open(this.file, "r", (openError, fileDescriptor) => {
+        if (openError) {
+          closeAndReject(openError, fileDescriptor);
+        } else {
+          fs.read(
+            fileDescriptor,
+            buffer,
+            0,
+            size,
+            position,
+            (readError, bytesRead) => {
+              if (readError) {
+                closeAndReject(readError, fileDescriptor);
+              } else if (bytesRead < size) {
+                closeAndReject(
+                  new Error("Invalid Format sub-chunk"),
+                  fileDescriptor
+                );
+              } else {
+                this.format = {
+                  id: buffer.toString("ascii", 0, 4)
+                };
+                closeAndResolve(this.format, fileDescriptor);
               }
             }
           );
