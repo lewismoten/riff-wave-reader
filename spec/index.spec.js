@@ -49,8 +49,12 @@ describe("riff-wave-reader", () => {
       expect(format.id).toBe("fmt ");
     });
     it("can read id", () => {
-      // PCM is 16
+      // PCM format takes up the next 16 bytes
       expect(format.size).toBe(16);
+    });
+    it("can read type", () => {
+      // 1 = PCM
+      expect(format.type).toBe(1);
     });
   });
 });

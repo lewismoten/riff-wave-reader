@@ -90,7 +90,8 @@ export class Reader {
               } else {
                 this.format = {
                   id: buffer.toString("ascii", 0, 4),
-                  size: buffer.readInt32LE(4)
+                  size: buffer.readInt32LE(4),
+                  type: buffer.readInt16LE(8)
                 };
                 closeAndResolve(this.format, fileDescriptor);
               }
