@@ -67,6 +67,11 @@ describe("riff-wave-reader", () => {
     it("can read byte rate", () => {
       expect(format.byteRate).toBe(8000);
     });
+    it("has valid byte rate", () => {
+      expect(format.byteRate).toBe(
+        (format.sampleRate * format.channels * format.bitsPerSample) / 8
+      );
+    });
     it("can read block alignment", () => {
       expect(format.blockAlignment).toBe(1);
     });
