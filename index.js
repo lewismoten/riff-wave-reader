@@ -94,7 +94,8 @@ export class Reader {
                   type: buffer.readInt16LE(8),
                   channels: buffer.readInt16LE(10),
                   sampleRate: buffer.readInt32LE(12),
-                  byteRate: buffer.readInt32LE(16)
+                  byteRate: buffer.readInt32LE(16),
+                  blockAlignment: buffer.readInt16LE(20)
                 };
                 this.format.typeName =
                   this.format.type === 1 ? "PCM" : "Unknown";
@@ -128,7 +129,6 @@ export class Reader {
 export default Reader;
 
 /*
-const getBlockAlignment = buffer => buffer.readInt32LE(32);
 const getBitsPerSample = buffer => buffer.readInt16LE(34);
 const getDataChunkHeader = buffer => buffer.toString("ascii", 36, 40);
 const getDataSectionSize = buffer => buffer.readInt32LE(40);

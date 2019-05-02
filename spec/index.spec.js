@@ -67,5 +67,10 @@ describe("riff-wave-reader", () => {
     it("can read byte rate", () => {
       expect(format.byteRate).toBe(8000);
     });
+    it("can read block alignment", () => {
+      // 8 bit PCM = 1 byte
+      // 1 channel * 1 byte = 1 byte per sample / block
+      expect(format.blockAlignment).toBe(1);
+    });
   });
 });
