@@ -22,6 +22,14 @@ export const readDataHeader = context =>
           const position = 20 + formatSize;
           const size = 8;
           const myBuffer = Buffer.alloc(size);
+          console.log("READING FILE");
+          console.log({
+            fileDescriptor,
+            myBuffer,
+            offset: 0,
+            length: size,
+            position
+          });
           read(fileDescriptor, myBuffer, 0, size, position)
             .then(showArguments)
             .then(validateBytesRead)
