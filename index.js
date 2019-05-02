@@ -2,7 +2,9 @@ const fs = require("fs");
 const path = require("path");
 
 // TODO: Don't read entire file into memory
-let buffer = Buffer.from(fs.readFileSync(path.join(__dirname, "hello.wav")));
+let buffer = Buffer.from(
+  fs.readFileSync(path.join(__dirname, "samples/hello.wav"))
+);
 
 // Read a RIFF - Resource Interchange File Format.
 const getFileType = buffer => buffer.toString("ascii", 0, 4);
