@@ -35,18 +35,22 @@ describe("riff-wave-reader", () => {
   });
   describe("Format Chunk", () => {
     let reader;
-    let riff;
+    let format;
     beforeAll(done => {
       reader = new Reader(file);
       reader
         .readFormat()
         .then(result => {
-          riff = result;
+          format = result;
         })
         .then(done);
     });
     it("can read id", () => {
-      expect(riff.id).toBe("fmt ");
+      expect(format.id).toBe("fmt ");
+    });
+    it("can read id", () => {
+      // PCM is 16
+      expect(format.size).toBe(16);
     });
   });
 });
