@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-export default (reader = file => {});
+export const reader = file => {};
+export default reader;
 
 /*
 // TODO: Don't read entire file into memory
