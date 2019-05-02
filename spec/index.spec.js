@@ -1,4 +1,4 @@
-import Reader from "../index.js";
+import Reader, { ReaderError } from "../index.js";
 import path from "path";
 
 const file = path.join(__dirname, "../samples/hello.wav");
@@ -10,6 +10,18 @@ describe("riff-wave-reader", () => {
   it("can instantiate", () => {
     const reader = new Reader();
     expect(typeof reader).toBe("object");
+  });
+  describe("Invalid File", () => {
+    it("handles missing file", done => {
+      const reader = new Reader("this file does not exist");
+      reader.readRiff().catch(e => {
+        console.log(new ReaderError("wwhhhhaaa"));
+        expect(e.message).toEqual("Unable to open file");
+        expect(e instanceof ReaderError).toBe(true);
+        expect(e.error).toContain("ENOENT: no such file");
+        done();
+      });
+    });
   });
   describe("RIFF Chunk", () => {
     let reader;

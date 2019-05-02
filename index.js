@@ -2,6 +2,14 @@ const fs = require("fs");
 const util = require("util");
 const read = util.promisify(fs.read);
 
+export class ReaderError extends Error {
+  constructor(message, error) {
+    super(message || "An error was encountered reading the file");
+    this.name = this.constructor.name;
+    this.error = error;
+    Error.captureStackTrace(this.constructor);
+  }
+}
 export class Reader {
   constructor(file) {
     this.file = file;
@@ -15,21 +23,20 @@ export class Reader {
 
       fs.open(this.file, "r", (openError, fileDescriptor) => {
         if (openError) {
-          closeAndReject(openError, fileDescriptor);
+          reject(new ReaderError("Unable to open file", openError));
         } else {
           read(fileDescriptor, myBuffer, 0, size, position)
             .then(({ buffer, bytesRead }) => {
+              const errorPrefix = "Invalid RIFF chunk descriptor";
               if (bytesRead < size)
-                throw new Error("Invalid RIFF chunk descriptor");
+                throw new ReaderError(`${errorPrefix} bytes read`);
               const tag = buffer.toString("ascii", 0, 4);
-              if (tag !== "RIFF")
-                throw new Error("Invalid RIFF chunk descriptor tag");
+              if (tag !== "RIFF") throw new ReaderError(`${errorPrefix} tag`);
               const riffSize = buffer.readInt32LE(4);
-              if (riffSize < 40)
-                throw new Error("Invalid RIFF chunk descriptor size");
+              if (riffSize < 40) throw new ReaderError(`${errorPrefix} size`);
               const format = buffer.toString("ascii", 8, 12);
               if (format !== "WAVE")
-                throw new Error("Invalid RIFF chunk descriptor format");
+                throw new ReaderError(`${errorPrefix} format`);
               this.riff = { tag, size: riffSize, format };
               closeAndResolve(this.riff, fileDescriptor);
             })
