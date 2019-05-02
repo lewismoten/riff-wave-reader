@@ -1,6 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
+export default (reader = file => {});
+
+/*
 // TODO: Don't read entire file into memory
 let buffer = Buffer.from(
   fs.readFileSync(path.join(__dirname, "samples/hello.wav"))
@@ -79,3 +82,4 @@ const details = {
 };
 
 console.log(JSON.stringify(details, null, " "));
+*/
