@@ -58,5 +58,8 @@ describe("riff-wave-reader", () => {
     it("can read typeName", () => {
       expect(format.typeName).toBe("PCM");
     });
+    it("can read channels", () => {
+      expect(format.channels).toBe(1);
+    });
   });
 });

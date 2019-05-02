@@ -91,7 +91,8 @@ export class Reader {
                 this.format = {
                   id: buffer.toString("ascii", 0, 4),
                   size: buffer.readInt32LE(4),
-                  type: buffer.readInt16LE(8)
+                  type: buffer.readInt16LE(8),
+                  channels: buffer.readInt16LE(10)
                 };
                 this.format.typeName =
                   this.format.type === 1 ? "PCM" : "Unknown";
