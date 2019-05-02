@@ -1,7 +1,65 @@
 const fs = require("fs");
 const path = require("path");
 
-export const Reader = file => {};
+export class Reader {
+  constructor(file) {
+    this.file = file;
+  }
+  readRiff() {
+    return new Promise((resolve, reject) => {
+      const size = 12;
+      const buffer = Buffer.alloc(size);
+      delete this.riff;
+      const riff = {};
+
+      const closeAndReject = (error, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          reject(error);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            reject(error);
+          });
+        }
+      };
+      const closeAndResolve = (data, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          resolve(data);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            closeError ? reject(closeError) : resolve(data);
+          });
+        }
+      };
+
+      fs.open(this.file, "r", (openError, fileDescriptor) => {
+        if (openError) {
+          closeAndReject(openError, fileDescriptor);
+        } else {
+          fs.read(
+            fileDescriptor,
+            buffer,
+            0,
+            size,
+            null,
+            (readError, bytesRead) => {
+              if (readError) {
+                closeAndReject(readError, fileDescriptor);
+              } else if (bytesRead < size) {
+                closeAndReject(
+                  new Error("Invalid RIFF header"),
+                  fileDescriptor
+                );
+              } else {
+                riff.tag = buffer.toString("ascii", 0, 4);
+                closeAndResolve((this.riff = riff), fileDescriptor);
+              }
+            }
+          );
+        }
+      });
+    });
+  }
+}
 export default Reader;
 
 /*
