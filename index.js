@@ -67,7 +67,10 @@ export class Reader {
       const position = 12;
       const size = 24;
       const buffer = Buffer.alloc(size);
-      delete this.format;
+      if ("format" in this) {
+        resolve(this.format);
+        return;
+      }
 
       fs.open(this.file, "r", (openError, fileDescriptor) => {
         if (openError) {
@@ -126,12 +129,71 @@ export class Reader {
       };
     });
   }
+  readDataHeader() {
+    return new Promise((resolve, reject) => {
+      this.readFormat().then(format => {
+        const position = 20 + format.size;
+        const size = 8;
+        const buffer = Buffer.alloc(size);
+        delete this.format;
+
+        fs.open(this.file, "r", (openError, fileDescriptor) => {
+          if (openError) {
+            closeAndReject(openError, fileDescriptor);
+          } else {
+            fs.read(
+              fileDescriptor,
+              buffer,
+              0,
+              size,
+              position,
+              (readError, bytesRead) => {
+                if (readError) {
+                  closeAndReject(readError, fileDescriptor);
+                } else if (bytesRead < size) {
+                  closeAndReject(
+                    new Error("Invalid data sub-chunk"),
+                    fileDescriptor
+                  );
+                } else {
+                  this.format = {
+                    id: buffer.toString("ascii", 0, 4),
+                    size: buffer.readInt32LE(4),
+                    startPosition: position + size
+                  };
+                  closeAndResolve(this.format, fileDescriptor);
+                }
+              }
+            );
+          }
+        });
+      });
+
+      const closeAndReject = (error, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          reject(error);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            reject(error || closeError);
+          });
+        }
+      };
+      const closeAndResolve = (data, fileDescriptor) => {
+        if (fileDescriptor === void 0) {
+          resolve(data);
+        } else {
+          fs.close(fileDescriptor, closeError => {
+            closeError ? reject(closeError) : resolve(data);
+          });
+        }
+      };
+    });
+  }
 }
 export default Reader;
 
 /*
-const getDataChunkHeader = buffer => buffer.toString("ascii", 36, 40);
-const getDataSectionSize = buffer => buffer.readInt32LE(40);
+
 const getChannelSample = (buffer, channel, index) => {
   const bitsPerSample = getBitsPerSample(buffer);
   const channels = getChannels(buffer);
@@ -147,48 +209,7 @@ const getSampleValueRange = bitsPerSample => {
   if (bitsPerSample === 32) return [-2147483648, 2147483647];
 };
 
-// Riff chunk
-const fileType = getFileType(buffer);
-const fileSize = getFileSize(buffer);
-const fileTypeHeader = getFileTypeHeader(buffer);
-// format chunk
-const formatChunkMarker = getFormatChunkMarker(buffer);
-const formatLength = getFormatLength(buffer);
-const formatType = getFormatType(buffer);
-const channels = getChannels(buffer);
-const sampleRate = getSampleRate(buffer);
-const byteRate = getByteRate(buffer);
-const blockAlignment = getBlockAlignment(buffer);
-const bitsPerSample = getBitsPerSample(buffer);
-// data chunk
-const dataChunkHeader = getDataChunkHeader(buffer);
-const dataSectionSize = getDataSectionSize(buffer);
-
 const sampleCount = (8 * dataSectionSize) / (channels * bitsPerSample);
 const sampleSize = (channels * bitsPerSample) / 8;
 const duration = fileSize / byteRate;
-
-// NOTE: actual file size may be larger than fileSize variable
-// if extra content appears after data. ie - metadata
-const details = {
-  bufferLength: buffer.length,
-  fileType, // "RIFF"
-  fileSize,
-  fileTypeHeader, // "WAVE"
-  formatChunkMarker, // "fmt "
-  formatLength,
-  formatType: formatType === 1 ? "PCM" : formatType,
-  channels, // 1 - mono; 2 - stereo
-  sampleRate,
-  byteRate,
-  blockAlignment,
-  bitsPerSample, // 8, 16, 32
-  dataChunkHeader, // "data"
-  dataSectionSize, // PCM data
-  sampleCount,
-  sampleSize, // bytes
-  duration // seconds
-};
-
-console.log(JSON.stringify(details, null, " "));
 */

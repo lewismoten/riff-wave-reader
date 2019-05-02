@@ -76,4 +76,27 @@ describe("riff-wave-reader", () => {
       expect(format.bitsPerSample).toBe(8);
     });
   });
+  describe("Data Chunk Header", () => {
+    let reader;
+    let dataHeader;
+    beforeAll(done => {
+      reader = new Reader(file);
+      reader
+        .readDataHeader()
+        .then(result => {
+          dataHeader = result;
+        })
+        .then(done);
+    });
+    it("can read id", () => {
+      expect(dataHeader.id).toBe("data");
+    });
+    it("can read size", () => {
+      expect(dataHeader.size).toBe(4273);
+    });
+    it("calculates start position", () => {
+      // should be same as riff.size + 4
+      expect(dataHeader.startPosition).toBe(44);
+    });
+  });
 });
