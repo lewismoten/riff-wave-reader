@@ -1,7 +1,12 @@
-import reader from "../index.js";
+import Reader from "../index.js";
+const path = require("path");
 
 describe("riff-wave-reader", () => {
-  it("can initialize", () => {
-    expect(typeof reader).toBe("function");
+  it("is function", () => {
+    expect(typeof Reader).toBe("function");
+  });
+  it("can instantiate", () => {
+    const reader = new Reader();
+    expect(typeof reader).toBe("object");
   });
 });
