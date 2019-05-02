@@ -8,7 +8,7 @@ export class Reader {
     return new Promise((resolve, reject) => {
       const position = 0;
       const size = 12;
-      const buffer = Buffer.alloc(size);
+      const myBuffer = Buffer.alloc(size);
       delete this.riff;
 
       fs.open(this.file, "r", (openError, fileDescriptor) => {
@@ -17,11 +17,11 @@ export class Reader {
         } else {
           fs.read(
             fileDescriptor,
-            buffer,
+            myBuffer,
             0,
             size,
             position,
-            (readError, bytesRead) => {
+            (readError, bytesRead, buffer) => {
               if (readError) {
                 closeAndReject(readError, fileDescriptor);
               } else if (bytesRead < size) {
