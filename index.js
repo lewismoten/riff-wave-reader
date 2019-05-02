@@ -22,37 +22,38 @@ export class Reader {
       const myBuffer = Buffer.alloc(size);
       delete this.riff;
 
-      const hasExpectedTag = ({ buffer, target }) =>
-        target.tag === buffer.toString("ascii", 0, 4)
-          ? { buffer, target }
-          : reject(errorRiffTag);
-
       fs.open(this.file, "r", (openError, fileDescriptor) => {
         if (openError) {
           reject(errorOpeningFile);
         } else {
           read(fileDescriptor, myBuffer, 0, size, position)
-            .then(({ buffer, bytesRead }) => {
-              if (bytesRead < size) reject(errorRiffTruncated);
-              return { buffer, target: { tag: "RIFF" } };
-            })
-            .then(hasExpectedTag)
-            .then(({ buffer, target }) => {
-              target.size = buffer.readInt32LE(4);
-              if (target.size < 40) reject(errorRiffSize);
-              return { buffer, target };
-            })
-            .then(({ buffer, target }) => {
-              target.format = buffer.toString("ascii", 8, 12);
-              if (target.format !== "WAVE") reject(errorRiffFormat);
-              return { buffer, target };
-            })
-            .then(({ target }) => {
-              this.riff = target;
-              resolve(target);
-            });
+            .then(validateBytesRead)
+            .then(readTag)
+            .then(readSize)
+            .then(readFormat)
+            .then(cacheResults)
+            .then(resolve);
         }
       });
+      const validateBytesRead = ({ buffer, bytesRead }) =>
+        bytesRead < size ? reject(errorRiffTruncated) : { buffer, target: {} };
+
+      const readTag = ({ buffer, target }) =>
+        "RIFF" === (target.tag = buffer.toString("ascii", 0, 4))
+          ? { buffer, target }
+          : reject(errorRiffTag, target.tag);
+
+      const readSize = ({ buffer, target }) =>
+        40 < (target.size = buffer.readInt32LE(4))
+          ? { buffer, target }
+          : reject(errorRiffSize);
+
+      const readFormat = ({ buffer, target }) =>
+        "WAVE" === (target.format = buffer.toString("ascii", 8, 12))
+          ? { buffer, target }
+          : reject(errorRiffFormat);
+
+      const cacheResults = ({ target }) => (this.riff = target);
     });
   }
   readFormat() {
