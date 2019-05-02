@@ -1,5 +1,4 @@
 const fs = require("fs");
-// const path = require("path");
 
 export class Reader {
   constructor(file) {
