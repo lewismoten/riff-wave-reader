@@ -1,0 +1,19 @@
+{
+  "name": "riff-wave-reader",
+  "version": "1.0.0",
+  "description": "riff-wave-reader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lewismoten/riff-wave-reader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lewismoten/riff-wave-reader/issues"
+  },
+  "homepage": "https://github.com/lewismoten/riff-wave-reader#readme"
+}
