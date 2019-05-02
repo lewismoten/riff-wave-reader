@@ -72,5 +72,8 @@ describe("riff-wave-reader", () => {
       // 1 channel * 1 byte = 1 byte per sample / block
       expect(format.blockAlignment).toBe(1);
     });
+    it("can read bits per sample", () => {
+      expect(format.bitsPerSample).toBe(8);
+    });
   });
 });
