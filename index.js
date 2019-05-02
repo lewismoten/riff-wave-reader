@@ -93,6 +93,8 @@ export class Reader {
                   size: buffer.readInt32LE(4),
                   type: buffer.readInt16LE(8)
                 };
+                this.format.typeName =
+                  this.format.type === 1 ? "PCM" : "Unknown";
                 closeAndResolve(this.format, fileDescriptor);
               }
             }
