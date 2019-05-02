@@ -65,7 +65,7 @@ export class Reader {
   readFormat() {
     return new Promise((resolve, reject) => {
       const position = 12;
-      const size = 40;
+      const size = 24;
       const buffer = Buffer.alloc(size);
       delete this.format;
 
