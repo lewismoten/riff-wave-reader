@@ -22,6 +22,11 @@ export class Reader {
       const myBuffer = Buffer.alloc(size);
       delete this.riff;
 
+      const hasExpectedTag = ({ buffer, target }) =>
+        target.tag === buffer.toString("ascii", 0, 4)
+          ? { buffer, target }
+          : reject(errorRiffTag);
+
       fs.open(this.file, "r", (openError, fileDescriptor) => {
         if (openError) {
           reject(errorOpeningFile);
@@ -29,13 +34,9 @@ export class Reader {
           read(fileDescriptor, myBuffer, 0, size, position)
             .then(({ buffer, bytesRead }) => {
               if (bytesRead < size) reject(errorRiffTruncated);
-              return { buffer, target: {} };
+              return { buffer, target: { tag: "RIFF" } };
             })
-            .then(({ buffer, target }) => {
-              target.tag = buffer.toString("ascii", 0, 4);
-              if (target.tag !== "RIFF") reject(errorRiffTag);
-              return { buffer, target };
-            })
+            .then(hasExpectedTag)
             .then(({ buffer, target }) => {
               target.size = buffer.readInt32LE(4);
               if (target.size < 40) reject(errorRiffSize);
