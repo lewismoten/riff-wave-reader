@@ -26,5 +26,8 @@ describe("riff-wave-reader", () => {
     it("can read tag", () => {
       expect(riff.tag).toBe("RIFF");
     });
+    it("can read size", () => {
+      expect(riff.size).toBe(4309);
+    });
   });
 });

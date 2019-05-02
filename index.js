@@ -51,6 +51,7 @@ export class Reader {
                 );
               } else {
                 riff.tag = buffer.toString("ascii", 0, 4);
+                riff.size = buffer.readInt32LE(4);
                 closeAndResolve((this.riff = riff), fileDescriptor);
               }
             }
