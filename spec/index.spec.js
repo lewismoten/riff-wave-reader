@@ -61,5 +61,8 @@ describe("riff-wave-reader", () => {
     it("can read channels", () => {
       expect(format.channels).toBe(1);
     });
+    it("can read sample rate", () => {
+      expect(format.sampleRate).toBe(8000);
+    });
   });
 });

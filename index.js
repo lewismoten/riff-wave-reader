@@ -92,7 +92,8 @@ export class Reader {
                   id: buffer.toString("ascii", 0, 4),
                   size: buffer.readInt32LE(4),
                   type: buffer.readInt16LE(8),
-                  channels: buffer.readInt16LE(10)
+                  channels: buffer.readInt16LE(10),
+                  sampleRate: buffer.readInt32LE(12)
                 };
                 this.format.typeName =
                   this.format.type === 1 ? "PCM" : "Unknown";
@@ -126,19 +127,6 @@ export class Reader {
 export default Reader;
 
 /*
-// TODO: Don't read entire file into memory
-let buffer = Buffer.from(
-  fs.readFileSync(path.join(__dirname, "samples/hello.wav"))
-);
-
-// Read a RIFF - Resource Interchange File Format.
-const getFileType = buffer => buffer.toString("ascii", 0, 4);
-const getFileSize = buffer => buffer.readInt32LE(4);
-const getFileTypeHeader = buffer => buffer.toString("ascii", 8, 12);
-const getFormatChunkMarker = buffer => buffer.toString("ascii", 12, 16);
-const getFormatLength = buffer => buffer.readInt32LE(16);
-const getFormatType = buffer => buffer.readInt16LE(20);
-const getChannels = buffer => buffer.readInt16LE(22);
 const getSampleRate = buffer => buffer.readInt32LE(24);
 const getByteRate = buffer => buffer.readInt32LE(28);
 const getBlockAlignment = buffer => buffer.readInt32LE(32);
