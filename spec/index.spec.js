@@ -1,4 +1,6 @@
-import Reader, { ReaderError } from "../index.js";
+import Reader from "../index.js";
+import * as locale from "../en-us.js";
+
 import path from "path";
 
 const file = path.join(__dirname, "../samples/hello.wav");
@@ -13,12 +15,10 @@ describe("riff-wave-reader", () => {
   });
   describe("Invalid File", () => {
     it("handles missing file", done => {
-      const reader = new Reader("this file does not exist");
+      const fileName = "this file does not exist";
+      const reader = new Reader(fileName);
       reader.readRiff().catch(e => {
-        console.log(new ReaderError("wwhhhhaaa"));
-        expect(e.message).toEqual("Unable to open file");
-        expect(e instanceof ReaderError).toBe(true);
-        expect(e.error).toContain("ENOENT: no such file");
+        expect(e).toEqual(locale.errorOpeningFile);
         done();
       });
     });
