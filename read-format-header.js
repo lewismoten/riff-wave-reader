@@ -33,10 +33,20 @@ export const readFormatHeader = context =>
           .then(readByteRate)
           .then(readBlockAlignment)
           .then(readBitsPerSample)
+          .then(closeFile)
           .then(calculateTypeName)
           .then(cacheResults)
           .then(resolve);
       }
+      const closeFile = o => {
+        return new Promise((res, rej) => {
+          fs.close(fileDescriptor, e => {
+            e && rej(e);
+            res(o);
+          });
+          return o;
+        });
+      };
     });
     const validateBytesRead = ({ buffer, bytesRead }) =>
       bytesRead < size ? reject(errorFormatTruncated) : { buffer, target: {} };

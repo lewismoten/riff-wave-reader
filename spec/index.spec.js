@@ -104,6 +104,10 @@ describe("riff-wave-reader", () => {
       reader
         .readDataHeader()
         .then(result => {
+          // console.log(
+          //   "RESULTS=============",
+          //   JSON.stringify(result, null, "  ")
+          // );
           dataHeader = result;
         })
         .then(done);
@@ -116,7 +120,7 @@ describe("riff-wave-reader", () => {
     });
     it("calculates start position", () => {
       // should be same as riff.size + 4
-      expect(dataHeader.startPosition).toBe(44);
+      expect(dataHeader.start).toBe(44);
     });
   });
 });
