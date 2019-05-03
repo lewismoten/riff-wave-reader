@@ -1,7 +1,5 @@
 before_install:
   - npm i -g npm@6.9.0
-  - nvm install 10.5.3
+  - nvm ls-remote
 language: node_js
-node_js:
-  - 10.5.3
 cache: npm
