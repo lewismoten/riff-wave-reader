@@ -104,10 +104,6 @@ describe("riff-wave-reader", () => {
       reader
         .readDataHeader()
         .then(result => {
-          // console.log(
-          //   "RESULTS=============",
-          //   JSON.stringify(result, null, "  ")
-          // );
           dataHeader = result;
         })
         .then(done);
