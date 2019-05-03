@@ -3,3 +3,4 @@ before_install:
 language: node_js
 node_js:
   - 10.5.3
+cache: npm
