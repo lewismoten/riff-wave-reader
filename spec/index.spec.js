@@ -76,8 +76,8 @@ describe("riff-wave-reader", () => {
         blockAlignment: 1,
         bitsPerSample: 8,
         sampleSize: 1,
-        sampleCount: 4309,
-        duration: 0.538625
+        sampleCount: 4265,
+        duration: 0.533125
       });
     });
     it("can read id", () => {
@@ -106,13 +106,13 @@ describe("riff-wave-reader", () => {
       expect(format.sampleSize).toBe(1);
     });
     it("calculates sample count", () => {
-      expect(format.sampleCount).toBe(4309);
+      expect(format.sampleCount).toBe(4265);
       // seems to high.
       // last sample appears to be at 4308 before header.
       // file size is 4316 bytes
     });
     it("calculates duration in fractional seconds", () => {
-      expect(format.duration).toBe(0.538625);
+      expect(format.duration).toBe(0.533125);
     });
     it("has valid byte rate", () => {
       expect(format.byteRate).toBe(
