@@ -155,5 +155,14 @@ describe("riff-wave-reader", () => {
         })
         .then(done);
     });
+    it("can read second sample", done => {
+      const reader = new Reader(file);
+      reader
+        .readSample(channel, 1)
+        .then(sample => {
+          expect(sample).toBe(0x80);
+        })
+        .then(done);
+    });
   });
 });
