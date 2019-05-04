@@ -57,6 +57,19 @@ describe("riff-wave-reader", () => {
         })
         .then(done);
     });
+    it("matches snapshot", () => {
+      expect(format).toEqual({
+        id: "fmt ",
+        size: 16,
+        type: 1,
+        typeName: "PCM",
+        channels: 1,
+        sampleRate: 8000,
+        byteRate: 8000,
+        blockAlignment: 1,
+        bitsPerSample: 8
+      });
+    });
     it("can read id", () => {
       expect(format.id).toBe("fmt ");
     });
