@@ -38,6 +38,7 @@ export const readFormatHeader = context =>
             .then(calculateTypeName)
             .then(calcSampleSize)
             .then(calcSampleCount)
+            .then(calcDuration)
             .then(cacheResults)
             .then(resolve);
         }
@@ -87,6 +88,11 @@ export const readFormatHeader = context =>
       };
     const calculateTypeName = ({ buffer, target }) =>
       (target.typeName = target.type === 1 ? "PCM" : unknown) && {
+        buffer,
+        target
+      };
+    const calcDuration = ({ buffer, target }) =>
+      (target.duration = target.sampleCount / target.sampleRate) && {
         buffer,
         target
       };

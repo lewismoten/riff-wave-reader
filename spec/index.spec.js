@@ -69,7 +69,8 @@ describe("riff-wave-reader", () => {
         blockAlignment: 1,
         bitsPerSample: 8,
         sampleSize: 1,
-        sampleCount: 4309
+        sampleCount: 4309,
+        duration: 0.538625
       });
     });
     it("can read id", () => {
@@ -99,6 +100,9 @@ describe("riff-wave-reader", () => {
     });
     it("calculates sample count", () => {
       expect(format.sampleCount).toBe(4309);
+    });
+    it("calculates duration in fractional seconds", () => {
+      expect(format.duration).toBe(0.538625);
     });
     it("has valid byte rate", () => {
       expect(format.byteRate).toBe(

@@ -35,6 +35,4 @@ const getSampleValueRange = bitsPerSample => {
   if (bitsPerSample === 16) return [-32768, 32767];
   if (bitsPerSample === 32) return [-2147483648, 2147483647];
 };
-
-const duration = fileSize / byteRate;
 */
