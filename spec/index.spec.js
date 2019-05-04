@@ -1,5 +1,7 @@
 import Reader from "../src/index.js";
 import * as locale from "../src/en-us.js";
+const fs = require("fs");
+const util = require("util");
 
 import path from "path";
 
@@ -14,40 +16,56 @@ describe("riff-wave-reader", () => {
     expect(typeof reader).toBe("object");
   });
   describe("desciptors", () => {
-    it("can read all", done => {
+    const descriptors = {
+      riff: {
+        tag: "RIFF",
+        size: 4309,
+        format: "WAVE"
+      },
+      format: {
+        id: "fmt ",
+        size: 16,
+        type: 1,
+        channels: 1,
+        sampleRate: 8000,
+        byteRate: 8000,
+        blockAlignment: 1,
+        bitsPerSample: 8,
+        typeName: "PCM",
+        sampleSize: 1,
+        sampleStart: 44,
+        sampleCount: 4265,
+        duration: 0.533125
+      },
+      data: {
+        id: "data",
+        size: 4273,
+        start: 44
+      }
+    };
+    it("can read from file", done => {
       const reader = new Reader(file);
       reader
         .readChunks()
         .then(chunks => {
-          expect(chunks).toEqual({
-            riff: {
-              tag: "RIFF",
-              size: 4309,
-              format: "WAVE"
-            },
-            format: {
-              id: "fmt ",
-              size: 16,
-              type: 1,
-              channels: 1,
-              sampleRate: 8000,
-              byteRate: 8000,
-              blockAlignment: 1,
-              bitsPerSample: 8,
-              typeName: "PCM",
-              sampleSize: 1,
-              sampleStart: 44,
-              sampleCount: 4265,
-              duration: 0.533125
-            },
-            data: {
-              id: "data",
-              size: 4273,
-              start: 44
-            }
-          });
+          expect(chunks).toEqual(descriptors);
         })
         .then(done);
+    });
+    it("can read from Buffer", done => {
+      const read = util.promisify(fs.read);
+      fs.open(file, "r", (openError, fileDescriptor) => {
+        expect(openError).toBe(null);
+        if (openError) throw openError;
+        const myBuffer = Buffer.alloc(44);
+        read(fileDescriptor, myBuffer, 0, 44, 0).then(buf => {
+          const reader = new Reader(buf);
+          reader.readChunks().then(chunks => {
+            expect(chunks).toEqual(descriptors);
+            done();
+          });
+        });
+      });
     });
   });
   describe("Invalid File", () => {
