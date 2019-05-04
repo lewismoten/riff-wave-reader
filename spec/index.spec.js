@@ -144,4 +144,16 @@ describe("riff-wave-reader", () => {
       expect(dataHeader.start).toBe(44);
     });
   });
+  describe("Sample", () => {
+    const channel = 0;
+    it("can read first sample", done => {
+      const reader = new Reader(file);
+      reader
+        .readSample(channel, 0)
+        .then(sample => {
+          expect(sample).toBe(0x7f);
+        })
+        .then(done);
+    });
+  });
 });
