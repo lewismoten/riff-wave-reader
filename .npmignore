@@ -1,5 +1,8 @@
 # verify with: npm pack --dry-run
 
+# raw source code
+src
+
 # tests
 spec
 samples
