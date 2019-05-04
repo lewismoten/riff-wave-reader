@@ -19,35 +19,44 @@ export const readFormatHeader = context =>
     const size = 24;
     const myBuffer = Buffer.alloc(size);
 
-    fs.open(context.file, "r", (openError, fileDescriptor) => {
-      if (openError) {
-        reject(errorOpeningFile);
-      } else {
-        read(fileDescriptor, myBuffer, 0, size, position)
-          .then(validateBytesRead)
-          .then(readId)
-          .then(readSize)
-          .then(readType)
-          .then(readChannels)
-          .then(readSampleRate)
-          .then(readByteRate)
-          .then(readBlockAlignment)
-          .then(readBitsPerSample)
-          .then(closeFile)
-          .then(calculateTypeName)
-          .then(calcSampleSize)
-          .then(cacheResults)
-          .then(resolve);
-      }
-      const closeFile = o => {
-        return new Promise((res, rej) => {
-          fs.close(fileDescriptor, e => {
-            e && rej(e);
-            res(o);
+    context.readRiff().then(({ size: dataSize }) => {
+      fs.open(context.file, "r", (openError, fileDescriptor) => {
+        if (openError) {
+          reject(errorOpeningFile);
+        } else {
+          read(fileDescriptor, myBuffer, 0, size, position)
+            .then(validateBytesRead)
+            .then(readId)
+            .then(readSize)
+            .then(readType)
+            .then(readChannels)
+            .then(readSampleRate)
+            .then(readByteRate)
+            .then(readBlockAlignment)
+            .then(readBitsPerSample)
+            .then(closeFile)
+            .then(calculateTypeName)
+            .then(calcSampleSize)
+            .then(calcSampleCount)
+            .then(cacheResults)
+            .then(resolve);
+        }
+        const closeFile = o => {
+          return new Promise((res, rej) => {
+            fs.close(fileDescriptor, e => {
+              e && rej(e);
+              res(o);
+            });
+            return o;
           });
-          return o;
-        });
-      };
+        };
+      });
+      const calcSampleCount = ({ buffer, target }) =>
+        (target.sampleCount =
+          (8 * dataSize) / (target.channels * target.bitsPerSample)) && {
+          buffer,
+          target
+        };
     });
     const validateBytesRead = ({ buffer, bytesRead }) =>
       bytesRead < size ? reject(errorFormatTruncated) : { buffer, target: {} };
