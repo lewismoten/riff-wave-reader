@@ -37,6 +37,5 @@ const getSampleValueRange = bitsPerSample => {
 };
 
 const sampleCount = (8 * dataSectionSize) / (channels * bitsPerSample);
-const sampleSize = (channels * bitsPerSample) / 8;
 const duration = fileSize / byteRate;
 */

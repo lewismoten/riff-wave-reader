@@ -57,6 +57,20 @@ describe("riff-wave-reader", () => {
         })
         .then(done);
     });
+    it("matches snapshot", () => {
+      expect(format).toEqual({
+        id: "fmt ",
+        size: 16,
+        type: 1,
+        typeName: "PCM",
+        channels: 1,
+        sampleRate: 8000,
+        byteRate: 8000,
+        blockAlignment: 1,
+        bitsPerSample: 8,
+        sampleSize: 1
+      });
+    });
     it("can read id", () => {
       expect(format.id).toBe("fmt ");
     });
@@ -78,6 +92,9 @@ describe("riff-wave-reader", () => {
     });
     it("can read byte rate", () => {
       expect(format.byteRate).toBe(8000);
+    });
+    it("calculates sample size", () => {
+      expect(format.sampleSize).toBe(1);
     });
     it("has valid byte rate", () => {
       expect(format.byteRate).toBe(
