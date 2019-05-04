@@ -20,5 +20,18 @@ export class Reader {
   readSample(channel, index) {
     return readSample(this, channel, index);
   }
+  readChunks() {
+    return readRiffHeader(this).then(riff => {
+      return readFormatHeader(this).then(format => {
+        return readDataHeader(this).then(data => {
+          return {
+            riff,
+            format,
+            data
+          };
+        });
+      });
+    });
+  }
 }
 export default Reader;

@@ -13,6 +13,43 @@ describe("riff-wave-reader", () => {
     const reader = new Reader();
     expect(typeof reader).toBe("object");
   });
+  describe("desciptors", () => {
+    it("can read all", done => {
+      const reader = new Reader(file);
+      reader
+        .readChunks()
+        .then(chunks => {
+          expect(chunks).toEqual({
+            riff: {
+              tag: "RIFF",
+              size: 4309,
+              format: "WAVE"
+            },
+            format: {
+              id: "fmt ",
+              size: 16,
+              type: 1,
+              channels: 1,
+              sampleRate: 8000,
+              byteRate: 8000,
+              blockAlignment: 1,
+              bitsPerSample: 8,
+              typeName: "PCM",
+              sampleSize: 1,
+              sampleStart: 44,
+              sampleCount: 4265,
+              duration: 0.533125
+            },
+            data: {
+              id: "data",
+              size: 4273,
+              start: 44
+            }
+          });
+        })
+        .then(done);
+    });
+  });
   describe("Invalid File", () => {
     it("handles missing file", done => {
       const fileName = "this file does not exist";
