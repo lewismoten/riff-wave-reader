@@ -100,6 +100,9 @@ describe("riff-wave-reader", () => {
     });
     it("calculates sample count", () => {
       expect(format.sampleCount).toBe(4309);
+      // seems to high.
+      // last sample appears to be at 4308 before header.
+      // file size is 4316 bytes
     });
     it("calculates duration in fractional seconds", () => {
       expect(format.duration).toBe(0.538625);
@@ -161,6 +164,18 @@ describe("riff-wave-reader", () => {
         .readSample(channel, 1)
         .then(sample => {
           expect(sample).toBe(0x80);
+        })
+        .then(done);
+    });
+    it("can read last sample", done => {
+      const reader = new Reader(file);
+      // last byte is at position 4309, value of 127 (0x7F)
+      // last line of file...
+      // 81 81 81 81 80 80 80 7F [7F] 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
+      reader
+        .readSample(channel, 4308) //4309+44=4353
+        .then(sample => {
+          expect(sample).toBe(0x7f);
         })
         .then(done);
     });
