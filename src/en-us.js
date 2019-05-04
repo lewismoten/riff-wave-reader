@@ -11,3 +11,4 @@ export const errorDataHeaderTruncated = "Data chunk incomplete";
 export const errorDataId = "Data chunk id is invalid";
 export const errorSampleNotFound = "Sample not found";
 export const errorSampleTruncated = "Sample incomplete";
+export const errorPositionOutOfRange = "Data read out of range";
