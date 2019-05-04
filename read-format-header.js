@@ -37,7 +37,9 @@ export const readFormatHeader = context =>
             .then(closeFile)
             .then(calculateTypeName)
             .then(calcSampleSize)
+            .then(calcSampleStart)
             .then(calcSampleCount)
+            .then(calcDuration)
             .then(cacheResults)
             .then(resolve);
         }
@@ -51,12 +53,24 @@ export const readFormatHeader = context =>
           });
         };
       });
-      const calcSampleCount = ({ buffer, target }) =>
-        (target.sampleCount =
-          (8 * dataSize) / (target.channels * target.bitsPerSample)) && {
-          buffer,
-          target
-        };
+      const calcSampleStart = ({ buffer, target }) => {
+        const tlvSize = 8;
+        const riffChunkSize = tlvSize + 4;
+        const formatChunkSize = tlvSize + target.size;
+        const dataChunkOffset = tlvSize;
+        target.sampleStart = riffChunkSize + formatChunkSize + dataChunkOffset;
+        return { buffer, target };
+      };
+      const calcSampleCount = ({ buffer, target }) => {
+        let rawDataSize = dataSize - target.sampleStart;
+        return (
+          (target.sampleCount =
+            rawDataSize / ((target.channels * target.bitsPerSample) / 8)) && {
+            buffer,
+            target
+          }
+        );
+      };
     });
     const validateBytesRead = ({ buffer, bytesRead }) =>
       bytesRead < size ? reject(errorFormatTruncated) : { buffer, target: {} };
@@ -87,6 +101,11 @@ export const readFormatHeader = context =>
       };
     const calculateTypeName = ({ buffer, target }) =>
       (target.typeName = target.type === 1 ? "PCM" : unknown) && {
+        buffer,
+        target
+      };
+    const calcDuration = ({ buffer, target }) =>
+      (target.duration = target.sampleCount / target.sampleRate) && {
         buffer,
         target
       };
