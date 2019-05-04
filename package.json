@@ -5,7 +5,8 @@
   "keywords": "wave,wav,sound,audio,music,8bit,pcm,riff,8-bit",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "babel-node spec/run.js"
+    "test": "babel-node spec/run.js",
+    "build": "babel src --out-dir ./dist --source-maps"
   },
   "repository": {
     "type": "git",
