@@ -1,5 +1,5 @@
-import Reader from "../index.js";
-import * as locale from "../en-us.js";
+import Reader from "../src/index.js";
+import * as locale from "../src/en-us.js";
 
 import path from "path";
 
