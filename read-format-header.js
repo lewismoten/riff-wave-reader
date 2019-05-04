@@ -35,6 +35,7 @@ export const readFormatHeader = context =>
           .then(readBitsPerSample)
           .then(closeFile)
           .then(calculateTypeName)
+          .then(calcSampleSize)
           .then(cacheResults)
           .then(resolve);
       }
@@ -55,7 +56,6 @@ export const readFormatHeader = context =>
       "fmt " === (target.id = buffer.toString("ascii", 0, 4))
         ? { buffer, target }
         : reject(errorFormatId, target.tag);
-
     const readSize = ({ buffer, target }) =>
       (target.size = buffer.readInt32LE(4)) && { buffer, target };
 
@@ -71,6 +71,11 @@ export const readFormatHeader = context =>
       (target.blockAlignment = buffer.readInt16LE(20)) && { buffer, target };
     const readBitsPerSample = ({ buffer, target }) =>
       (target.bitsPerSample = buffer.readInt16LE(22)) && { buffer, target };
+    const calcSampleSize = ({ buffer, target }) =>
+      (target.sampleSize = (target.channels * target.bitsPerSample) / 8) && {
+        buffer,
+        target
+      };
     const calculateTypeName = ({ buffer, target }) =>
       (target.typeName = target.type === 1 ? "PCM" : unknown) && {
         buffer,
@@ -79,16 +84,3 @@ export const readFormatHeader = context =>
 
     const cacheResults = ({ target }) => (context.format = target);
   });
-
-// this.format = {
-//   id: buffer.toString("ascii", 0, 4),
-//   size: buffer.readInt32LE(4),
-//   type: buffer.readInt16LE(8),
-//   channels: buffer.readInt16LE(10),
-//   sampleRate: buffer.readInt32LE(12),
-//   byteRate: buffer.readInt32LE(16),
-//   blockAlignment: buffer.readInt16LE(20),
-//   bitsPerSample: buffer.readInt16LE(22)
-// };
-// this.format.typeName = this.format.type === 1 ? "PCM" : "Unknown";
-//
