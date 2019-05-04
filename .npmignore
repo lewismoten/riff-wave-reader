@@ -1,0 +1,15 @@
+# verify with: npm pack --dry-run
+
+# tests
+spec
+samples
+
+# git (README.sample)
+/.git/hooks
+
+# build
+.travis.yml
+
+# run commands
+.*rc
+.*rc.js
