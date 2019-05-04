@@ -37,6 +37,7 @@ export const readFormatHeader = context =>
             .then(closeFile)
             .then(calculateTypeName)
             .then(calcSampleSize)
+            .then(calcSampleStart)
             .then(calcSampleCount)
             .then(calcDuration)
             .then(cacheResults)
@@ -52,18 +53,37 @@ export const readFormatHeader = context =>
           });
         };
       });
+      const calcSampleStart = ({ buffer, target }) => {
+        // data size - start
+        // all data
+        let sampleStart = 0;
+        // except riff header tag + size
+        sampleStart += 8;
+        // except format tag + size
+        sampleStart += 8;
+        // except format header + tag + size
+        sampleStart += target.size;
+        // except data header  / size
+        sampleStart += 8;
+        sampleStart += 4;
+        target.sampleStart = sampleStart;
+        return { buffer, target };
+      };
       const calcSampleCount = ({ buffer, target }) => {
         // data size - start
         // all data
-        let rawDataSize = dataSize;
-        // except riff header tag + size
-        rawDataSize -= 8; //40;
-        // except format header + tag + size
-        rawDataSize -= target.size + 8;
-        // except data header  / size
-        rawDataSize -= 8;
-        rawDataSize -= 4;
-        // last byte = 4309 = riff size
+        let rawDataSize = dataSize - target.sampleStart;
+        // let rawDataSize = dataSize;
+        // // except riff header tag + size
+        // rawDataSize -= 8;
+        // // except format tag + size
+        // rawDataSize -= 8;
+        // // except format header + tag + size
+        // rawDataSize -= target.size;
+        // // except data header  / size
+        // rawDataSize -= 8;
+        // rawDataSize -= 4;
+        // // last byte = 4309 = riff size
         return (
           (target.sampleCount =
             rawDataSize / ((target.channels * target.bitsPerSample) / 8)) && {

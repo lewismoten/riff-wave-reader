@@ -67,6 +67,7 @@ describe("riff-wave-reader", () => {
     const sampleSize = 1;
     const sampleCount = 4265;
     const duration = 0.533125;
+    const sampleStart = 44;
     beforeAll(done => {
       reader = new Reader(file);
       reader
@@ -89,7 +90,8 @@ describe("riff-wave-reader", () => {
         bitsPerSample,
         sampleSize,
         sampleCount,
-        duration
+        duration,
+        sampleStart
       });
     });
     it("can read id", () => {
@@ -118,6 +120,9 @@ describe("riff-wave-reader", () => {
     });
     it("calculates sample count", () => {
       expect(format.sampleCount).toBe(sampleCount);
+    });
+    it("calculates sample start", () => {
+      expect(format.sampleStart).toBe(sampleStart);
     });
     it("calculates duration in fractional seconds", () => {
       expect(format.duration).toBe(duration);
