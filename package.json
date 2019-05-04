@@ -1,7 +1,8 @@
 {
   "name": "riff-wave-reader",
-  "version": "1.0.0",
-  "description": "riff-wave-reader",
+  "version": "0.1.0",
+  "description": "This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.",
+  "keywords": "wave,wav,sound,audio,music,8bit,pcm,riff,8-bit",
   "main": "index.js",
   "scripts": {
     "test": "babel-node spec/run.js"
@@ -10,8 +11,8 @@
     "type": "git",
     "url": "git+https://github.com/lewismoten/riff-wave-reader.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Lewis Moten (http://facebook.com/lewis.moten)",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/lewismoten/riff-wave-reader/issues"
   },
