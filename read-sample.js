@@ -3,7 +3,8 @@ const util = require("util");
 
 import {
   errorOpeningFile,
-  errorDataHeaderTruncated
+  errorSampleNotFound,
+  errorSampleTruncated
   // errorDataId
 } from "./en-us.js";
 
@@ -34,8 +35,15 @@ export const readSample = (context, channel, index) =>
         if (openError) {
           reject(errorOpeningFile);
         } else {
+          // fix position start to calculate later. currently 44 is correct for this file
           const position =
             44 + index * sampleSize + (channel * bitsPerSample) / 8;
+          console.log(
+            "Reading channel %s index %s at position %s",
+            channel,
+            index,
+            position
+          );
           const size = bitsPerSample / 8;
           const myBuffer = Buffer.alloc(size);
           const bufferPosition = 0;
@@ -58,7 +66,8 @@ export const readSample = (context, channel, index) =>
             //     "  "
             //   )
             // );
-            if (bytesRead < buffer.length) throw errorDataHeaderTruncated;
+            if (bytesRead === 0) throw errorSampleNotFound;
+            if (bytesRead < buffer.length) throw errorSampleTruncated;
             return buffer;
           };
           const readSample = buffer => {

@@ -52,12 +52,26 @@ export const readFormatHeader = context =>
           });
         };
       });
-      const calcSampleCount = ({ buffer, target }) =>
-        (target.sampleCount =
-          (8 * dataSize) / (target.channels * target.bitsPerSample)) && {
-          buffer,
-          target
-        };
+      const calcSampleCount = ({ buffer, target }) => {
+        // data size - start
+        // all data
+        let rawDataSize = dataSize;
+        // except riff header tag + size
+        rawDataSize -= 8; //40;
+        // except format header + tag + size
+        rawDataSize -= target.size + 8;
+        // except data header  / size
+        rawDataSize -= 8;
+        rawDataSize -= 4;
+        // last byte = 4309 = riff size
+        return (
+          (target.sampleCount =
+            rawDataSize / ((target.channels * target.bitsPerSample) / 8)) && {
+            buffer,
+            target
+          }
+        );
+      };
     });
     const validateBytesRead = ({ buffer, bytesRead }) =>
       bytesRead < size ? reject(errorFormatTruncated) : { buffer, target: {} };

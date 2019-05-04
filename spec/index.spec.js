@@ -35,6 +35,13 @@ describe("riff-wave-reader", () => {
         })
         .then(done);
     });
+    it("matches snapshot", () => {
+      expect(riff).toEqual({
+        tag: "RIFF",
+        size: 4309,
+        format: "WAVE"
+      });
+    });
     it("can read tag", () => {
       expect(riff.tag).toBe("RIFF");
     });
@@ -172,12 +179,14 @@ describe("riff-wave-reader", () => {
       // last byte is at position 4309, value of 127 (0x7F)
       // last line of file...
       // 81 81 81 81 80 80 80 7F [7F] 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader
-        .readSample(channel, 4308) //4309+44=4353
-        .then(sample => {
-          expect(sample).toBe(0x7f);
-        })
-        .then(done);
+      reader.readFormat().then(({ sampleCount }) => {
+        reader
+          .readSample(channel, sampleCount - 1) //4309+44=4353
+          .then(sample => {
+            expect(sample).toBe(0x7f);
+          })
+          .then(done);
+      });
     });
   });
 });
