@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "commit-msg": "echo 'commitlint -E HUSKY_GIT_PARAMS'"
+  }
+}
