@@ -1,114 +1,56 @@
-const fs = require("fs");
-const util = require("util");
-
-import {
-  errorOpeningFile,
-  errorFormatTruncated,
-  errorFormatId,
-  unknown
-} from "./en-us.js";
-
-const read = util.promisify(fs.read);
+import { errorFormatId, unknown } from "./en-us.js";
 
 export const readFormatHeader = context =>
   new Promise((resolve, reject) => {
     if (context.format) {
       resolve(context.format);
     }
-    const position = 12;
-    const size = 24;
-    const myBuffer = Buffer.alloc(size);
-
     context.readRiff().then(({ size: dataSize }) => {
-      fs.open(context.file, "r", (openError, fileDescriptor) => {
-        if (openError) {
-          reject(errorOpeningFile);
-        } else {
-          read(fileDescriptor, myBuffer, 0, size, position)
-            .then(validateBytesRead)
-            .then(readId)
-            .then(readSize)
-            .then(readType)
-            .then(readChannels)
-            .then(readSampleRate)
-            .then(readByteRate)
-            .then(readBlockAlignment)
-            .then(readBitsPerSample)
-            .then(closeFile)
-            .then(calculateTypeName)
-            .then(calcSampleSize)
-            .then(calcSampleStart)
-            .then(calcSampleCount)
-            .then(calcDuration)
-            .then(cacheResults)
-            .then(resolve);
-        }
-        const closeFile = o => {
-          return new Promise((res, rej) => {
-            fs.close(fileDescriptor, e => {
-              e && rej(e);
-              res(o);
-            });
-            return o;
-          });
-        };
-      });
-      const calcSampleStart = ({ buffer, target }) => {
-        const tlvSize = 8;
-        const riffChunkSize = tlvSize + 4;
-        const formatChunkSize = tlvSize + target.size;
-        const dataChunkOffset = tlvSize;
-        target.sampleStart = riffChunkSize + formatChunkSize + dataChunkOffset;
-        return { buffer, target };
-      };
-      const calcSampleCount = ({ buffer, target }) => {
-        let rawDataSize = dataSize - target.sampleStart;
-        return (
-          (target.sampleCount =
-            rawDataSize / ((target.channels * target.bitsPerSample) / 8)) && {
-            buffer,
-            target
-          }
-        );
-      };
+      return context
+        .getBuffer(12, 24)
+        .then(buffer => {
+          const id = buffer.toString("ascii", 0, 4);
+          const size = buffer.readInt32LE(4);
+          const type = buffer.readInt16LE(8);
+          const channels = buffer.readInt16LE(10);
+          const sampleRate = buffer.readInt32LE(12);
+          const byteRate = buffer.readInt32LE(16);
+          const blockAlignment = buffer.readInt16LE(20);
+          const bitsPerSample = buffer.readInt16LE(22);
+          const typeName = type === 1 ? "PCM" : unknown;
+          const sampleSize = (channels * bitsPerSample) / 8;
+
+          const tlvSize = 8;
+          const riffChunkSize = tlvSize + 4;
+          const formatChunkSize = tlvSize + size;
+          const dataChunkOffset = tlvSize;
+          const sampleStart = riffChunkSize + formatChunkSize + dataChunkOffset;
+
+          let rawDataSize = dataSize - sampleStart;
+          const sampleCount = rawDataSize / ((channels * bitsPerSample) / 8);
+          const duration = sampleCount / sampleRate;
+
+          if (id !== "fmt ") reject(errorFormatId);
+          else
+            resolve(
+              (context.format = {
+                id,
+                size,
+                type,
+                channels,
+                sampleRate,
+                byteRate,
+                blockAlignment,
+                bitsPerSample,
+                // calculations
+                typeName,
+                sampleSize,
+                sampleStart,
+                sampleCount,
+                duration
+              })
+            );
+        })
+        .catch(reject);
     });
-    const validateBytesRead = ({ buffer, bytesRead }) =>
-      bytesRead < size ? reject(errorFormatTruncated) : { buffer, target: {} };
-
-    const readId = ({ buffer, target }) =>
-      "fmt " === (target.id = buffer.toString("ascii", 0, 4))
-        ? { buffer, target }
-        : reject(errorFormatId, target.tag);
-    const readSize = ({ buffer, target }) =>
-      (target.size = buffer.readInt32LE(4)) && { buffer, target };
-
-    const readType = ({ buffer, target }) =>
-      (target.type = buffer.readInt16LE(8)) && { buffer, target };
-    const readChannels = ({ buffer, target }) =>
-      (target.channels = buffer.readInt16LE(10)) && { buffer, target };
-    const readSampleRate = ({ buffer, target }) =>
-      (target.sampleRate = buffer.readInt32LE(12)) && { buffer, target };
-    const readByteRate = ({ buffer, target }) =>
-      (target.byteRate = buffer.readInt32LE(16)) && { buffer, target };
-    const readBlockAlignment = ({ buffer, target }) =>
-      (target.blockAlignment = buffer.readInt16LE(20)) && { buffer, target };
-    const readBitsPerSample = ({ buffer, target }) =>
-      (target.bitsPerSample = buffer.readInt16LE(22)) && { buffer, target };
-    const calcSampleSize = ({ buffer, target }) =>
-      (target.sampleSize = (target.channels * target.bitsPerSample) / 8) && {
-        buffer,
-        target
-      };
-    const calculateTypeName = ({ buffer, target }) =>
-      (target.typeName = target.type === 1 ? "PCM" : unknown) && {
-        buffer,
-        target
-      };
-    const calcDuration = ({ buffer, target }) =>
-      (target.duration = target.sampleCount / target.sampleRate) && {
-        buffer,
-        target
-      };
-
-    const cacheResults = ({ target }) => (context.format = target);
   });
