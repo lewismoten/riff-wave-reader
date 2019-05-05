@@ -1,7 +1,10 @@
 window.addEventListener("load", onLoad);
 var input;
+var audio;
+
 function onLoad() {
   input = document.getElementById("file");
+  audio = document.getElementById("audio");
   input.addEventListener("change", onChanged, false);
 }
 function onChanged() {
@@ -20,10 +23,7 @@ function onChanged() {
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    alert(e.target.result);
-    // e.target.result
+    audio.src = e.target.result;
   };
   reader.readAsDataURL(field);
-
-  //alert(JSON.stringify(details, null, "  "));
 }
