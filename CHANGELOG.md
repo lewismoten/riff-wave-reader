@@ -1,3 +1,7 @@
+# Dev
+
+- Read from array and buffer
+
 # 0.1
 
 - v0.1.1 support non-ES5 environment
