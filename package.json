@@ -6,7 +6,8 @@
   "main": "./lib/index.js",
   "scripts": {
     "test": "babel-node spec/run.js",
-    "build": "babel src --out-dir ./lib --source-maps"
+    "build": "babel src --out-dir ./lib --source-maps",
+    "start": "node ./scripts/start.js"
   },
   "repository": {
     "type": "git",
