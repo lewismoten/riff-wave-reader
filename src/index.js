@@ -20,24 +20,24 @@ export class RiffWaveReader {
         index * format.sampleSize +
         (channel * format.bitsPerSample) / 8;
       const size = format.bitsPerSample / 8;
-      return this._read(position, size).then(buffer => buffer.readUInt8(0));
+      return this._read(position, size).then(buffer => int8(buffer, 0));
     });
   }
   readChunks() {
     return this._read(0, 44).then(buffer => {
       // RIFF
-      const tag = buffer.toString("ascii", 0, 4);
+      const tag = ascii(buffer, 0, 4);
       if (tag !== "RIFF") throw errorRiffTag;
 
       let riffSize = int32(buffer, 4);
 
-      const format = buffer.toString("ascii", 8, 12);
+      const format = ascii(buffer, 8, 4);
       if (format !== "WAVE") errorRiffFormat;
 
       const riffChunk = { tag, size: riffSize, format };
 
       // Format
-      const id = buffer.toString("ascii", 12, 16);
+      const id = ascii(buffer, 12, 4);
       if (id !== "fmt ") throw errorFormatId;
       const formatSize = int32(buffer, 16);
       const type = int16(buffer, 20);
@@ -80,7 +80,7 @@ export class RiffWaveReader {
       let dataChunk;
       if (formatSize === 16) {
         dataChunk = {
-          id: buffer.toString("ascii", 36, 40),
+          id: ascii(buffer, 36, 4),
           size: int32(buffer, 40),
           start: 44
         };
@@ -96,5 +96,8 @@ export class RiffWaveReader {
   }
 }
 export default RiffWaveReader;
-const int32 = (source, position) => source.readInt32LE(position);
+const int8 = (source, position) => source.readUInt8(position);
 const int16 = (source, position) => source.readInt16LE(position);
+const int32 = (source, position) => source.readInt32LE(position);
+const ascii = (source, position, length) =>
+  source.toString("ascii", position, position + length);
