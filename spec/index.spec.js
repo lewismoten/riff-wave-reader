@@ -80,6 +80,35 @@ describe("riff-wave-reader", () => {
         });
       });
     });
+    describe("Array", () => {
+      let reader;
+      beforeAll(done => {
+        const read = util.promisify(fs.read);
+        fs.open(file, "r", (openError, fileDescriptor) => {
+          expect(openError).toBe(null);
+          if (openError) throw openError;
+          const myBuffer = Buffer.alloc(45);
+          read(fileDescriptor, myBuffer, 0, 45, 0).then(({ buffer }) => {
+            const array = [];
+            array.push(...buffer);
+            reader = new Reader(array);
+            done();
+          });
+        });
+      });
+      it("reads descriptors", done => {
+        reader.readChunks().then(chunks => {
+          expect(chunks).toEqual(descriptors);
+          done();
+        });
+      });
+      it("reads first channels first sample", done => {
+        reader.readSample(0, 0).then(sample => {
+          expect(sample).toBe(0x7f);
+          done();
+        });
+      });
+    });
   });
   describe("Invalid File", () => {
     it("handles missing file", done => {
