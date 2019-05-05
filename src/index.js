@@ -40,12 +40,12 @@ export class RiffWaveReader {
       const id = buffer.toString("ascii", 12, 16);
       if (id !== "fmt ") throw errorFormatId;
       const formatSize = int32(buffer, 16);
-      const type = buffer.readInt16LE(20);
-      const channels = buffer.readInt16LE(22);
+      const type = int16(buffer, 20);
+      const channels = int16(buffer, 22);
       const sampleRate = int32(buffer, 24);
       const byteRate = int32(buffer, 28);
-      const blockAlignment = buffer.readInt16LE(32);
-      const bitsPerSample = buffer.readInt16LE(34);
+      const blockAlignment = int16(buffer, 32);
+      const bitsPerSample = int16(buffer, 34);
 
       // Calculations
       const typeName = type === 1 ? "PCM" : unknown;
@@ -97,3 +97,4 @@ export class RiffWaveReader {
 }
 export default RiffWaveReader;
 const int32 = (source, position) => source.readInt32LE(position);
+const int16 = (source, position) => source.readInt16LE(position);
