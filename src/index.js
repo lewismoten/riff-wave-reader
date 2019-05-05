@@ -1,41 +1,90 @@
-import { readRiffHeader } from "./read-riff--header.js";
-import { readFormatHeader } from "./read-format-header.js";
-import { readDataHeader } from "./read-data-header.js";
-import { readSample } from "./read-sample.js";
 const fs = require("fs");
 const util = require("util");
 const read = util.promisify(fs.read);
 
 import { errorOpeningFile, errorPositionOutOfRange } from "./en-us.js";
+import { errorRiffTag, errorRiffSize, errorRiffFormat } from "./en-us.js";
+import { errorFormatId, unknown } from "./en-us.js";
+import { errorDataId } from "./en-us.js";
 
 export class RiffWaveReader {
   constructor(source) {
     this.source = source;
   }
-  readRiff() {
-    return readRiffHeader(this);
-  }
 
-  readFormat() {
-    return readFormatHeader(this);
-  }
-  readDataHeader() {
-    return readDataHeader(this);
-  }
   readSample(channel, index) {
-    return readSample(this, channel, index);
+    return this.readChunks().then(({ format }) => {
+      const position =
+        format.sampleStart +
+        index * format.sampleSize +
+        (channel * format.bitsPerSample) / 8;
+      const size = format.bitsPerSample / 8;
+      return this.getBuffer(position, size).then(buffer => buffer.readUInt8(0));
+    });
   }
   readChunks() {
-    return readRiffHeader(this).then(riff => {
-      return readFormatHeader(this).then(format => {
-        return readDataHeader(this).then(data => {
-          return {
-            riff,
-            format,
-            data
-          };
-        });
-      });
+    return this.getBuffer(0, 44).then(buffer => {
+      const tag = buffer.toString("ascii", 0, 4);
+      let riffSize = buffer.readInt32LE(4);
+      const format = buffer.toString("ascii", 8, 12);
+      if (tag !== "RIFF") throw errorRiffTag;
+      if (riffSize < 40) throw errorRiffSize;
+      if (format !== "WAVE") errorRiffFormat;
+      const riffChunk = { tag, size: riffSize, format };
+
+      const id = buffer.toString("ascii", 12 + 0, 12 + 4);
+      const formatSize = buffer.readInt32LE(12 + 4);
+      const type = buffer.readInt16LE(12 + 8);
+      const channels = buffer.readInt16LE(12 + 10);
+      const sampleRate = buffer.readInt32LE(12 + 12);
+      const byteRate = buffer.readInt32LE(12 + 16);
+      const blockAlignment = buffer.readInt16LE(12 + 20);
+      const bitsPerSample = buffer.readInt16LE(12 + 22);
+      const typeName = type === 1 ? "PCM" : unknown;
+      const sampleSize = (channels * bitsPerSample) / 8;
+
+      const tlvSize = 8;
+      const riffChunkSize = tlvSize + 4;
+      const formatChunkSize = tlvSize + formatSize;
+      const dataChunkOffset = tlvSize;
+      const sampleStart = riffChunkSize + formatChunkSize + dataChunkOffset;
+
+      let rawDataSize = riffSize - sampleStart;
+      const sampleCount = rawDataSize / ((channels * bitsPerSample) / 8);
+      const duration = sampleCount / sampleRate;
+      let dataChunk;
+
+      if (formatSize === 16) {
+        dataChunk = {
+          id: buffer.toString("ascii", 36, 40),
+          size: buffer.readInt32LE(40),
+          start: 44
+        };
+        if (dataChunk.id !== "data") throw errorDataId;
+      }
+
+      if (id !== "fmt ") throw errorFormatId;
+      const formatChunk = {
+        id,
+        size: formatSize,
+        type,
+        channels,
+        sampleRate,
+        byteRate,
+        blockAlignment,
+        bitsPerSample,
+        typeName,
+        sampleSize,
+        sampleStart,
+        sampleCount,
+        duration
+      };
+
+      return {
+        riff: riffChunk,
+        format: formatChunk,
+        data: dataChunk
+      };
     });
   }
   getBuffer(offset, size) {

@@ -114,7 +114,7 @@ describe("riff-wave-reader", () => {
     it("handles missing file", done => {
       const fileName = "this file does not exist";
       const reader = new RiffWaveReader(fileName);
-      reader.readRiff().catch(e => {
+      reader.readChunks().catch(e => {
         expect(e).toEqual(locale.errorOpeningFile);
         done();
       });
@@ -126,9 +126,9 @@ describe("riff-wave-reader", () => {
     beforeAll(done => {
       reader = new RiffWaveReader(file);
       reader
-        .readRiff()
+        .readChunks()
         .then(result => {
-          riff = result;
+          riff = result.riff;
         })
         .then(done);
     });
@@ -168,9 +168,9 @@ describe("riff-wave-reader", () => {
     beforeAll(done => {
       reader = new RiffWaveReader(file);
       reader
-        .readFormat()
+        .readChunks()
         .then(result => {
-          format = result;
+          format = result.format;
         })
         .then(done);
     });
@@ -243,9 +243,9 @@ describe("riff-wave-reader", () => {
     beforeAll(done => {
       reader = new RiffWaveReader(file);
       reader
-        .readDataHeader()
+        .readChunks()
         .then(result => {
-          dataHeader = result;
+          dataHeader = result.data;
         })
         .then(done);
     });
@@ -283,9 +283,9 @@ describe("riff-wave-reader", () => {
     it("can read last sample", done => {
       const reader = new RiffWaveReader(file);
       // 81 81 81 81 80 80 80 7F [7F] 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readFormat().then(({ sampleCount }) => {
+      reader.readChunks().then(({ format }) => {
         reader
-          .readSample(channel, sampleCount - 1)
+          .readSample(channel, format.sampleCount - 1)
           .then(sample => {
             expect(sample).toBe(0x7f);
           })
@@ -295,9 +295,9 @@ describe("riff-wave-reader", () => {
     it("can read penultimate sample", done => {
       const reader = new RiffWaveReader(file);
       // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readFormat().then(({ sampleCount }) => {
+      reader.readChunks().then(({ format }) => {
         reader
-          .readSample(channel, sampleCount - 2)
+          .readSample(channel, format.sampleCount - 2)
           .then(sample => {
             expect(sample).toBe(0x7f);
           })
