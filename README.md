@@ -8,21 +8,22 @@ This library reads the data within RIFF file with it's contents formatted as a W
 
 ```javascript
 import RiffWaveReader from "riff-wave-reader";
+import Reader from "riff-wave-reader/reader";
 let reader;
-
-// from file name
-reader = new RiffWaveReader("./samples/hello.wav");
 
 // from array
 const data =
-  "52 49 46 46 d5 10 00 00 57 41 56 45 66 6d 74 20" +
-  "10 00 00 00 01 00 01 00 40 1f 00 00 40 1f 00 00" +
+  "52 49 46 46 d5 10 00 00 57 41 56 45 66 6d 74 20 " +
+  "10 00 00 00 01 00 01 00 40 1f 00 00 40 1f 00 00 " +
   "01 00 08 00 64 61 74 61 b1 10 00 00 7f";
 const array = data.split(" ").map(v => parseInt(v, 16));
 reader = new RiffWaveReader(array);
 
-// from buffer
-reader = new RiffWaveReader(Buffer.from(array));
+// To handle large files without loading them completely into memory
+// from wrapped file, buffer, or array
+reader = new RiffWaveReader(new Reader("./samples/hello.wav"));
+reader = new RiffWaveReader(new Reader(Buffer.from(array)));
+reader = new RiffWaveReader(new Reader(array));
 
 // Read header chunks
 reader.readChunks().then(chunks => {

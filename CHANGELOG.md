@@ -1,6 +1,8 @@
 # Dev
 
 - Read from array and buffer
+- Split reader for large files separately
+- Detatch dependency on node packages
 
 # 0.1
 
