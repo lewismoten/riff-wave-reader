@@ -48,10 +48,17 @@ export class Reader {
         this.getBufferFromBuffer(offset, size, this.file)
           .then(resolve)
           .catch(reject);
+      } else if (Array.isArray(this.file)) {
+        this.getBufferFromArray(offset, size, this.file)
+          .then(resolve)
+          .catch(reject);
       } else {
         reject("Unknown source: " + this.file);
       }
     });
+  }
+  getBufferFromArray(offset, size, array) {
+    return this.getBufferFromBuffer(offset, size, Buffer.from(array));
   }
   getBufferFromBuffer(offset, size, buffer) {
     return new Promise((resolve, reject) => {
