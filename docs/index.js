@@ -10,20 +10,31 @@ function onLoad() {
 function onChanged() {
   var count = this.files.length;
 
+  audio.src = "";
   if (count === 0) return;
   if (this.files[0].type !== "audio/wav") return;
 
-  var details = {
-    count: count
-  };
   var field = this.files[0];
-  details.size = field.size;
-  details.name = field.name;
-  details.type = field.type;
 
+  showInPlayer(field);
+  showDetails(field);
+}
+function showInPlayer(blob) {
   const reader = new FileReader();
   reader.onload = function(e) {
     audio.src = e.target.result;
   };
-  reader.readAsDataURL(field);
+  reader.readAsDataURL(blob);
+}
+function showDetails(blob) {
+  var details = {};
+  details.size = blob.size;
+  details.name = blob.name;
+  details.type = blob.type;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    var array = e.target.result;
+  };
+  reader.readAsArrayBuffer(blob);
 }
