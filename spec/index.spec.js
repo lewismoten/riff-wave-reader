@@ -43,6 +43,7 @@ describe("riff-wave-reader", () => {
         start: 44
       }
     };
+
     it("can read from file", done => {
       const reader = new Reader(file);
       reader
@@ -52,18 +53,30 @@ describe("riff-wave-reader", () => {
         })
         .then(done);
     });
-    it("can read from Buffer", done => {
-      const read = util.promisify(fs.read);
-      fs.open(file, "r", (openError, fileDescriptor) => {
-        expect(openError).toBe(null);
-        if (openError) throw openError;
-        const myBuffer = Buffer.alloc(44);
-        read(fileDescriptor, myBuffer, 0, 44, 0).then(({ buffer }) => {
-          const reader = new Reader(buffer);
-          reader.readChunks().then(chunks => {
-            expect(chunks).toEqual(descriptors);
+    describe("Buffer", () => {
+      let reader;
+      beforeAll(done => {
+        const read = util.promisify(fs.read);
+        fs.open(file, "r", (openError, fileDescriptor) => {
+          expect(openError).toBe(null);
+          if (openError) throw openError;
+          const myBuffer = Buffer.alloc(45);
+          read(fileDescriptor, myBuffer, 0, 45, 0).then(({ buffer }) => {
+            reader = new Reader(buffer);
             done();
           });
+        });
+      });
+      it("reads descriptors", done => {
+        reader.readChunks().then(chunks => {
+          expect(chunks).toEqual(descriptors);
+          done();
+        });
+      });
+      it("reads first channels first sample", done => {
+        reader.readSample(0, 0).then(sample => {
+          expect(sample).toBe(0x7f);
+          done();
         });
       });
     });
