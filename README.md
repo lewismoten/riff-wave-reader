@@ -11,7 +11,7 @@ import RiffWaveReader from "riff-wave-reader";
 let reader;
 
 // from file name
-reader = new RiffWaveReader("./sampes/hello.wav");
+reader = new RiffWaveReader("./samples/hello.wav");
 
 // from array
 const data =
