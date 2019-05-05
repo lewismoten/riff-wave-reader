@@ -10,6 +10,11 @@ export class RiffWaveReader {
   }
 
   _read(offset, size) {
+    if (Array.isArray(this.reader)) {
+      return new Promise(resolve =>
+        resolve(this.reader.slice(offset, offset + size + 1))
+      );
+    }
     return this.reader.read(offset, size);
   }
 
