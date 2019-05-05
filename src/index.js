@@ -42,14 +42,14 @@ export class RiffWaveReader {
       if (format !== "WAVE") errorRiffFormat;
       const riffChunk = { tag, size: riffSize, format };
 
-      const id = buffer.toString("ascii", 12 + 0, 12 + 4);
-      const formatSize = buffer.readInt32LE(12 + 4);
-      const type = buffer.readInt16LE(12 + 8);
-      const channels = buffer.readInt16LE(12 + 10);
-      const sampleRate = buffer.readInt32LE(12 + 12);
-      const byteRate = buffer.readInt32LE(12 + 16);
-      const blockAlignment = buffer.readInt16LE(12 + 20);
-      const bitsPerSample = buffer.readInt16LE(12 + 22);
+      const id = buffer.toString("ascii", 12, 16);
+      const formatSize = buffer.readInt32LE(16);
+      const type = buffer.readInt16LE(20);
+      const channels = buffer.readInt16LE(22);
+      const sampleRate = buffer.readInt32LE(24);
+      const byteRate = buffer.readInt32LE(28);
+      const blockAlignment = buffer.readInt16LE(32);
+      const bitsPerSample = buffer.readInt16LE(34);
       const typeName = type === 1 ? "PCM" : unknown;
       const sampleSize = (channels * bitsPerSample) / 8;
 
