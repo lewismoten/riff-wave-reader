@@ -1,55 +1,24 @@
-const fs = require("fs");
-const util = require("util");
-
-import {
-  errorOpeningFile,
-  errorRiffTruncated,
-  errorRiffTag,
-  errorRiffSize,
-  errorRiffFormat
-} from "./en-us.js";
-
-const read = util.promisify(fs.read);
+import { errorRiffTag, errorRiffSize, errorRiffFormat } from "./en-us.js";
 
 export const readRiffHeader = context =>
   new Promise((resolve, reject) => {
     if (context.riff) {
       resolve(context.riff);
     }
-    const position = 0;
-    const size = 12;
-    const myBuffer = Buffer.alloc(size);
-
-    fs.open(context.file, "r", (openError, fileDescriptor) => {
-      if (openError) {
-        reject(errorOpeningFile);
-      } else {
-        read(fileDescriptor, myBuffer, 0, size, position)
-          .then(validateBytesRead)
-          .then(readTag)
-          .then(readSize)
-          .then(readFormat)
-          .then(cacheResults)
-          .then(resolve);
-      }
+    context.getBuffer(0, 12).then(buffer => {
+      const tag = buffer.toString("ascii", 0, 4);
+      const size = buffer.readInt32LE(4);
+      const format = buffer.toString("ascii", 8, 12);
+      if (tag !== "RIFF") reject(errorRiffTag);
+      else if (size < 40) reject(errorRiffSize);
+      else if (format !== "WAVE") reject(errorRiffFormat);
+      else
+        resolve(
+          (context.riff = {
+            tag,
+            size,
+            format
+          })
+        );
     });
-    const validateBytesRead = ({ buffer, bytesRead }) =>
-      bytesRead < size ? reject(errorRiffTruncated) : { buffer, target: {} };
-
-    const readTag = ({ buffer, target }) =>
-      "RIFF" === (target.tag = buffer.toString("ascii", 0, 4))
-        ? { buffer, target }
-        : reject(errorRiffTag, target.tag);
-
-    const readSize = ({ buffer, target }) =>
-      40 < (target.size = buffer.readInt32LE(4))
-        ? { buffer, target }
-        : reject(errorRiffSize);
-
-    const readFormat = ({ buffer, target }) =>
-      "WAVE" === (target.format = buffer.toString("ascii", 8, 12))
-        ? { buffer, target }
-        : reject(errorRiffFormat);
-
-    const cacheResults = ({ target }) => (context.riff = target);
   });
