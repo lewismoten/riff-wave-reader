@@ -1,4 +1,5 @@
 import RiffWaveReader from "../src/index.js";
+import Reader from "../src/reader.js";
 const fs = require("fs");
 const util = require("util");
 
@@ -45,7 +46,7 @@ describe("riff-wave-reader", () => {
     };
 
     it("can read from file", done => {
-      const reader = new RiffWaveReader(file);
+      const reader = new RiffWaveReader(new Reader(file));
       reader
         .readChunks()
         .then(chunks => {
@@ -62,7 +63,7 @@ describe("riff-wave-reader", () => {
           if (openError) throw openError;
           const myBuffer = Buffer.alloc(45);
           read(fileDescriptor, myBuffer, 0, 45, 0).then(({ buffer }) => {
-            reader = new RiffWaveReader(buffer);
+            reader = new RiffWaveReader(new Reader(buffer));
             done();
           });
         });
@@ -91,7 +92,7 @@ describe("riff-wave-reader", () => {
           read(fileDescriptor, myBuffer, 0, 45, 0).then(({ buffer }) => {
             const array = [];
             array.push(...buffer);
-            reader = new RiffWaveReader(array);
+            reader = new RiffWaveReader(new Reader(array));
             done();
           });
         });
@@ -113,7 +114,7 @@ describe("riff-wave-reader", () => {
   describe("Invalid File", () => {
     it("handles missing file", done => {
       const fileName = "this file does not exist";
-      const reader = new RiffWaveReader(fileName);
+      const reader = new RiffWaveReader(new Reader(fileName));
       reader.readChunks().catch(e => {
         expect(e).toEqual(errorOpeningFile);
         done();
@@ -124,7 +125,7 @@ describe("riff-wave-reader", () => {
     let reader;
     let riff;
     beforeAll(done => {
-      reader = new RiffWaveReader(file);
+      reader = new RiffWaveReader(new Reader(file));
       reader
         .readChunks()
         .then(result => {
@@ -166,7 +167,7 @@ describe("riff-wave-reader", () => {
     const duration = 0.533125;
     const sampleStart = 44;
     beforeAll(done => {
-      reader = new RiffWaveReader(file);
+      reader = new RiffWaveReader(new Reader(file));
       reader
         .readChunks()
         .then(result => {
@@ -241,7 +242,7 @@ describe("riff-wave-reader", () => {
     let reader;
     let dataHeader;
     beforeAll(done => {
-      reader = new RiffWaveReader(file);
+      reader = new RiffWaveReader(new Reader(file));
       reader
         .readChunks()
         .then(result => {
@@ -263,7 +264,7 @@ describe("riff-wave-reader", () => {
   describe("Sample", () => {
     const channel = 0;
     it("can read first sample", done => {
-      const reader = new RiffWaveReader(file);
+      const reader = new RiffWaveReader(new Reader(file));
       reader
         .readSample(channel, 0)
         .then(sample => {
@@ -272,7 +273,7 @@ describe("riff-wave-reader", () => {
         .then(done);
     });
     it("can read second sample", done => {
-      const reader = new RiffWaveReader(file);
+      const reader = new RiffWaveReader(new Reader(file));
       reader
         .readSample(channel, 1)
         .then(sample => {
@@ -281,7 +282,7 @@ describe("riff-wave-reader", () => {
         .then(done);
     });
     it("can read last sample", done => {
-      const reader = new RiffWaveReader(file);
+      const reader = new RiffWaveReader(new Reader(file));
       // 81 81 81 81 80 80 80 7F [7F] 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
       reader.readChunks().then(({ format }) => {
         reader
@@ -293,7 +294,7 @@ describe("riff-wave-reader", () => {
       });
     });
     it("can read penultimate sample", done => {
-      const reader = new RiffWaveReader(file);
+      const reader = new RiffWaveReader(new Reader(file));
       // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
       reader.readChunks().then(({ format }) => {
         reader

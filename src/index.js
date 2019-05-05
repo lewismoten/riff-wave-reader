@@ -1,18 +1,16 @@
-const fs = require("fs");
-const util = require("util");
-const read = util.promisify(fs.read);
-
-const errorOpeningFile = "Unable to open file";
 const errorRiffTag = "RIFF chunk has wrong tag.";
 const errorRiffFormat = "RIFF chunk specifies invalid format";
 const errorFormatId = "Format chunk id is invalid";
 const unknown = "Unknown";
 const errorDataId = "Data chunk id is invalid";
-const errorPositionOutOfRange = "Data read out of range";
 
 export class RiffWaveReader {
-  constructor(source) {
-    this.source = source;
+  constructor(reader) {
+    this.reader = reader;
+  }
+
+  _read(offset, size) {
+    return this.reader.read(offset, size);
   }
 
   readSample(channel, index) {
@@ -22,11 +20,11 @@ export class RiffWaveReader {
         index * format.sampleSize +
         (channel * format.bitsPerSample) / 8;
       const size = format.bitsPerSample / 8;
-      return this.getBuffer(position, size).then(buffer => buffer.readUInt8(0));
+      return this._read(position, size).then(buffer => buffer.readUInt8(0));
     });
   }
   readChunks() {
-    return this.getBuffer(0, 44).then(buffer => {
+    return this._read(0, 44).then(buffer => {
       // RIFF
       const tag = buffer.toString("ascii", 0, 4);
       if (tag !== "RIFF") throw errorRiffTag;
@@ -94,62 +92,6 @@ export class RiffWaveReader {
         format: formatChunk,
         data: dataChunk
       };
-    });
-  }
-  getBuffer(offset, size) {
-    return new Promise((resolve, reject) => {
-      if (typeof this.source === "string") {
-        this.getBufferFromFile(offset, size, this.source)
-          .then(resolve)
-          .catch(reject);
-      } else if (Buffer.isBuffer(this.source)) {
-        this.getBufferFromBuffer(offset, size, this.source)
-          .then(resolve)
-          .catch(reject);
-      } else if (Array.isArray(this.source)) {
-        this.getBufferFromArray(offset, size, this.source)
-          .then(resolve)
-          .catch(reject);
-      } else {
-        reject("Unknown source: " + this.source);
-      }
-    });
-  }
-  getBufferFromArray(offset, size, array) {
-    return this.getBufferFromBuffer(offset, size, Buffer.from(array));
-  }
-  getBufferFromBuffer(offset, size, buffer) {
-    return new Promise((resolve, reject) => {
-      if (offset + size > buffer.length) {
-        reject(errorPositionOutOfRange);
-      } else {
-        resolve(buffer.slice(offset, offset + size));
-      }
-    });
-  }
-  getBufferFromFile(offset, size, file) {
-    return new Promise((resolve, reject) => {
-      fs.open(file, "r", (openError, fileDescriptor) => {
-        if (openError) {
-          reject(errorOpeningFile);
-        } else {
-          const myBuffer = Buffer.alloc(size);
-          read(fileDescriptor, myBuffer, 0, size, offset)
-            .then(({ buffer, bytesRead }) =>
-              bytesRead < size
-                ? reject(errorPositionOutOfRange)
-                : resolve(buffer)
-            )
-            .then(buffer => {
-              return new Promise((closeResolve, closeReject) => {
-                fs.close(fileDescriptor, closeError => {
-                  closeError && closeReject(closeError);
-                  closeResolve(buffer);
-                });
-              });
-            });
-        }
-      });
     });
   }
 }
