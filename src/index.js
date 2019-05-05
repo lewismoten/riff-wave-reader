@@ -8,7 +8,7 @@ const read = util.promisify(fs.read);
 
 import { errorOpeningFile, errorPositionOutOfRange } from "./en-us.js";
 
-export class Reader {
+export class RiffWaveReader {
   constructor(source) {
     this.source = source;
   }
@@ -95,4 +95,4 @@ export class Reader {
     });
   }
 }
-export default Reader;
+export default RiffWaveReader;
