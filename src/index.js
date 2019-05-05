@@ -82,13 +82,12 @@ export class Reader {
                 ? reject(errorPositionOutOfRange)
                 : resolve(buffer)
             )
-            .then(o => {
-              return new Promise((res, rej) => {
-                fs.close(fileDescriptor, e => {
-                  e && rej(e);
-                  res(o);
+            .then(buffer => {
+              return new Promise((closeResolve, closeReject) => {
+                fs.close(fileDescriptor, closeError => {
+                  closeError && closeReject(closeError);
+                  closeResolve(buffer);
                 });
-                return o;
               });
             });
         }
