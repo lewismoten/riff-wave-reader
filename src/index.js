@@ -59,7 +59,8 @@ export class Reader {
         reject(errorPositionOutOfRange);
       } else {
         const target = Buffer.alloc(size);
-        if (size !== buffer.copy(target, 0, offset, size)) {
+        const copied = buffer.copy(target, 0, offset, offset + size);
+        if (size !== copied) {
           reject(errorPositionOutOfRange);
         }
         resolve(target);
