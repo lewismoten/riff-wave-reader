@@ -34,15 +34,20 @@ export class RiffWaveReader {
   }
   readChunks() {
     return this.getBuffer(0, 44).then(buffer => {
+      // RIFF
       const tag = buffer.toString("ascii", 0, 4);
-      let riffSize = buffer.readInt32LE(4);
-      const format = buffer.toString("ascii", 8, 12);
       if (tag !== "RIFF") throw errorRiffTag;
-      if (riffSize < 40) throw errorRiffSize;
+
+      let riffSize = buffer.readInt32LE(4);
+
+      const format = buffer.toString("ascii", 8, 12);
       if (format !== "WAVE") errorRiffFormat;
+
       const riffChunk = { tag, size: riffSize, format };
 
+      // Format
       const id = buffer.toString("ascii", 12, 16);
+      if (id !== "fmt ") throw errorFormatId;
       const formatSize = buffer.readInt32LE(16);
       const type = buffer.readInt16LE(20);
       const channels = buffer.readInt16LE(22);
@@ -50,6 +55,8 @@ export class RiffWaveReader {
       const byteRate = buffer.readInt32LE(28);
       const blockAlignment = buffer.readInt16LE(32);
       const bitsPerSample = buffer.readInt16LE(34);
+
+      // Calculations
       const typeName = type === 1 ? "PCM" : unknown;
       const sampleSize = (channels * bitsPerSample) / 8;
 
@@ -62,18 +69,6 @@ export class RiffWaveReader {
       let rawDataSize = riffSize - sampleStart;
       const sampleCount = rawDataSize / ((channels * bitsPerSample) / 8);
       const duration = sampleCount / sampleRate;
-      let dataChunk;
-
-      if (formatSize === 16) {
-        dataChunk = {
-          id: buffer.toString("ascii", 36, 40),
-          size: buffer.readInt32LE(40),
-          start: 44
-        };
-        if (dataChunk.id !== "data") throw errorDataId;
-      }
-
-      if (id !== "fmt ") throw errorFormatId;
       const formatChunk = {
         id,
         size: formatSize,
@@ -89,6 +84,17 @@ export class RiffWaveReader {
         sampleCount,
         duration
       };
+
+      // Data
+      let dataChunk;
+      if (formatSize === 16) {
+        dataChunk = {
+          id: buffer.toString("ascii", 36, 40),
+          size: buffer.readInt32LE(40),
+          start: 44
+        };
+        if (dataChunk.id !== "data") throw errorDataId;
+      }
 
       return {
         riff: riffChunk,
