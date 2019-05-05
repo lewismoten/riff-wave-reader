@@ -6,7 +6,10 @@ function onLoad() {
 }
 function onChanged() {
   var count = this.files.length;
+
   if (count === 0) return;
+  if (this.files[0].type !== "audio/wav") return;
+
   var details = {
     count: count
   };
@@ -14,5 +17,13 @@ function onChanged() {
   details.size = field.size;
   details.name = field.name;
   details.type = field.type;
-  alert(JSON.stringify(details, null, "  "));
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    alert(e.target.result);
+    // e.target.result
+  };
+  reader.readAsDataURL(field);
+
+  //alert(JSON.stringify(details, null, "  "));
 }
