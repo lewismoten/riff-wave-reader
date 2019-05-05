@@ -41,29 +41,38 @@ export class Reader {
   getBuffer(offset, size) {
     return new Promise((resolve, reject) => {
       if (typeof this.file === "string") {
-        fs.open(this.file, "r", (openError, fileDescriptor) => {
-          if (openError) {
-            reject(errorOpeningFile);
-          } else {
-            const myBuffer = Buffer.alloc(size);
-            read(fileDescriptor, myBuffer, offset, size, 0)
-              .then(({ buffer, bytesRead }) =>
-                bytesRead < size
-                  ? reject(errorPositionOutOfRange)
-                  : resolve(buffer)
-              )
-              .then(o => {
-                return new Promise((res, rej) => {
-                  fs.close(fileDescriptor, e => {
-                    e && rej(e);
-                    res(o);
-                  });
-                  return o;
-                });
-              });
-          }
-        });
+        return this.getBufferFromFile(offset, size, this.file)
+          .then(resolve)
+          .catch(reject);
+      } else {
+        reject("Unknown source");
       }
+    });
+  }
+  getBufferFromFile(offset, size, file) {
+    return new Promise((resolve, reject) => {
+      fs.open(file, "r", (openError, fileDescriptor) => {
+        if (openError) {
+          reject(errorOpeningFile);
+        } else {
+          const myBuffer = Buffer.alloc(size);
+          read(fileDescriptor, myBuffer, offset, size, 0)
+            .then(({ buffer, bytesRead }) =>
+              bytesRead < size
+                ? reject(errorPositionOutOfRange)
+                : resolve(buffer)
+            )
+            .then(o => {
+              return new Promise((res, rej) => {
+                fs.close(fileDescriptor, e => {
+                  e && rej(e);
+                  res(o);
+                });
+                return o;
+              });
+            });
+        }
+      });
     });
   }
 }
