@@ -91,14 +91,6 @@ describe("riff-wave-reader", () => {
           read(fileDescriptor, myBuffer, 0, 45, 0).then(({ buffer }) => {
             const array = [];
             array.push(...buffer);
-            console.log(
-              array.reduce((s, v) => {
-                let h = v.toString(16);
-                if (v < 16) h = "0" + h;
-                s += " " + h;
-                return s;
-              }, "")
-            );
             reader = new RiffWaveReader(array);
             done();
           });
