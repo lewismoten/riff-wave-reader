@@ -73,7 +73,7 @@ export class Reader {
           reject(errorOpeningFile);
         } else {
           const myBuffer = Buffer.alloc(size);
-          read(fileDescriptor, myBuffer, offset, size, 0)
+          read(fileDescriptor, myBuffer, 0, size, offset)
             .then(({ buffer, bytesRead }) =>
               bytesRead < size
                 ? reject(errorPositionOutOfRange)
