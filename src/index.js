@@ -96,8 +96,17 @@ export class RiffWaveReader {
   }
 }
 export default RiffWaveReader;
-const int8 = (source, position) => source.readUInt8(position);
-const int16 = (source, position) => source.readInt16LE(position);
-const int32 = (source, position) => source.readInt32LE(position);
+
 const ascii = (source, position, length) =>
   source.toString("ascii", position, position + length);
+const int8 = (source, position) => littleEndian(source, position, 1);
+const int16 = (source, position) => littleEndian(source, position, 2);
+const int32 = (source, position) => littleEndian(source, position, 4);
+const littleEndian = (source, position, length) => {
+  let value = 0;
+  for (let i = length - 1; i >= 0; i--) {
+    value *= 0b100000000;
+    value += source[position + i];
+  }
+  return value;
+};
