@@ -41,11 +41,28 @@ export class Reader {
   getBuffer(offset, size) {
     return new Promise((resolve, reject) => {
       if (typeof this.file === "string") {
-        return this.getBufferFromFile(offset, size, this.file)
+        this.getBufferFromFile(offset, size, this.file)
+          .then(resolve)
+          .catch(reject);
+      } else if (Buffer.isBuffer(this.file)) {
+        this.getBufferFromBuffer(offset, size, this.file)
           .then(resolve)
           .catch(reject);
       } else {
-        reject("Unknown source");
+        reject("Unknown source: " + this.file);
+      }
+    });
+  }
+  getBufferFromBuffer(offset, size, buffer) {
+    return new Promise((resolve, reject) => {
+      if (offset + size > buffer.length) {
+        reject(errorPositionOutOfRange);
+      } else {
+        const target = Buffer.alloc(size);
+        if (size !== buffer.copy(target, 0, offset, size)) {
+          reject(errorPositionOutOfRange);
+        }
+        resolve(target);
       }
     });
   }

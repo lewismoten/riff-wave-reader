@@ -58,8 +58,8 @@ describe("riff-wave-reader", () => {
         expect(openError).toBe(null);
         if (openError) throw openError;
         const myBuffer = Buffer.alloc(44);
-        read(fileDescriptor, myBuffer, 0, 44, 0).then(buf => {
-          const reader = new Reader(buf);
+        read(fileDescriptor, myBuffer, 0, 44, 0).then(({ buffer }) => {
+          const reader = new Reader(buffer);
           reader.readChunks().then(chunks => {
             expect(chunks).toEqual(descriptors);
             done();
