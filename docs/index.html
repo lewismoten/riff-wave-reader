@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charaset="utf-8" />
+    <title>Riff Wave Reader Documentation</title>
+    <meta
+      name="descrption"
+      content="This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data."
+    />
+    <meta name="author" content="Lewis Moten" />
+  </head>
+  <body>
+    <h1>Riff Wave Reader Documentation</h1>
+    <p>
+      This library reads the data within RIFF file with it's contents formatted
+      as a WAVE file containing PCM data.
+    </p>
+    <form>
+      Wave File: <input type="file" onchange="fileChanged(this.files)" />
+    </form>
+  </body>
+  <script>
+    function fileChanged(files) {
+      alert("files changed:\r\n" + JSON.stringify(files, null, "  "));
+    }
+  </script>
+</html>
