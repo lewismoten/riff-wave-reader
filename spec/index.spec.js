@@ -1,11 +1,11 @@
 import RiffWaveReader from "../src/index.js";
-import * as locale from "../src/en-us.js";
 const fs = require("fs");
 const util = require("util");
 
 import path from "path";
 
 const file = path.join(__dirname, "../samples/hello.wav");
+export const errorOpeningFile = "Unable to open file";
 
 describe("riff-wave-reader", () => {
   it("is function", () => {
@@ -115,7 +115,7 @@ describe("riff-wave-reader", () => {
       const fileName = "this file does not exist";
       const reader = new RiffWaveReader(fileName);
       reader.readChunks().catch(e => {
-        expect(e).toEqual(locale.errorOpeningFile);
+        expect(e).toEqual(errorOpeningFile);
         done();
       });
     });

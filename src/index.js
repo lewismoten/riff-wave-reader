@@ -2,10 +2,20 @@ const fs = require("fs");
 const util = require("util");
 const read = util.promisify(fs.read);
 
-import { errorOpeningFile, errorPositionOutOfRange } from "./en-us.js";
-import { errorRiffTag, errorRiffSize, errorRiffFormat } from "./en-us.js";
-import { errorFormatId, unknown } from "./en-us.js";
-import { errorDataId } from "./en-us.js";
+export const errorMessage = "A RIFF WAVE reader exception was encountered";
+export const errorOpeningFile = "Unable to open file";
+export const errorRiffTruncated = "RIFF chunk incomplete";
+export const errorRiffTag = "RIFF chunk has wrong tag.";
+export const errorRiffSize = "RIFF chunk specifies invalid size";
+export const errorRiffFormat = "RIFF chunk specifies invalid format";
+export const errorFormatTruncated = "Format chunk incomplete";
+export const errorFormatId = "Format chunk id is invalid";
+export const unknown = "Unknown";
+export const errorDataHeaderTruncated = "Data chunk incomplete";
+export const errorDataId = "Data chunk id is invalid";
+export const errorSampleNotFound = "Sample not found";
+export const errorSampleTruncated = "Sample incomplete";
+export const errorPositionOutOfRange = "Data read out of range";
 
 export class RiffWaveReader {
   constructor(source) {
