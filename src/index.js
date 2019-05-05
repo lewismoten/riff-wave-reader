@@ -9,8 +9,8 @@ const read = util.promisify(fs.read);
 import { errorOpeningFile, errorPositionOutOfRange } from "./en-us.js";
 
 export class Reader {
-  constructor(file) {
-    this.file = file;
+  constructor(source) {
+    this.source = source;
   }
   readRiff() {
     return readRiffHeader(this);
@@ -40,20 +40,20 @@ export class Reader {
   }
   getBuffer(offset, size) {
     return new Promise((resolve, reject) => {
-      if (typeof this.file === "string") {
-        this.getBufferFromFile(offset, size, this.file)
+      if (typeof this.source === "string") {
+        this.getBufferFromFile(offset, size, this.source)
           .then(resolve)
           .catch(reject);
-      } else if (Buffer.isBuffer(this.file)) {
-        this.getBufferFromBuffer(offset, size, this.file)
+      } else if (Buffer.isBuffer(this.source)) {
+        this.getBufferFromBuffer(offset, size, this.source)
           .then(resolve)
           .catch(reject);
-      } else if (Array.isArray(this.file)) {
-        this.getBufferFromArray(offset, size, this.file)
+      } else if (Array.isArray(this.source)) {
+        this.getBufferFromArray(offset, size, this.source)
           .then(resolve)
           .catch(reject);
       } else {
-        reject("Unknown source: " + this.file);
+        reject("Unknown source: " + this.source);
       }
     });
   }
