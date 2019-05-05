@@ -1,16 +1,19 @@
 window.addEventListener("load", onLoad);
 var input;
 var audio;
+var out;
 
 function onLoad() {
   input = document.getElementById("file");
   audio = document.getElementById("audio");
+  blobLog = document.getElementById("blobLog");
   input.addEventListener("change", onChanged, false);
 }
 function onChanged() {
   var count = this.files.length;
 
   audio.src = "";
+  blobLog.innerText = "";
   if (count === 0) return;
   if (this.files[0].type !== "audio/wav") return;
 
@@ -27,10 +30,15 @@ function showInPlayer(blob) {
   reader.readAsDataURL(blob);
 }
 function showDetails(blob) {
-  var details = {};
-  details.size = blob.size;
-  details.name = blob.name;
-  details.type = blob.type;
+  blobLog.innerText = JSON.stringify(
+    {
+      name: blob.name,
+      size: blob.size,
+      type: blob.type
+    },
+    null,
+    "  "
+  );
 
   const reader = new FileReader();
   reader.onload = function(e) {
