@@ -6,14 +6,13 @@ function onLoad() {
 }
 function onChanged() {
   var count = this.files.length;
+  if (count === 0) return;
   var details = {
     count: count
   };
-  if (count > 0) {
-    var field = this.files[0];
-    details.size = field.size;
-    details.name = field.name;
-    details.type = field.type;
-  }
+  var field = this.files[0];
+  details.size = field.size;
+  details.name = field.name;
+  details.type = field.type;
   alert(JSON.stringify(details, null, "  "));
 }
