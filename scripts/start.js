@@ -3,9 +3,8 @@ const path = require("path");
 const fs = require("fs");
 
 const app = http.createServer((request, response) => {
-  console.log(request.url);
-  let filePath = "./docs" + request.url;
-  if (filePath === "./docs/") filePath += "/index.html";
+  let filePath = path.join(__dirname, "..\\", request.url);
+  console.log(request.url, "-->", filePath);
   fs.readFile(filePath, (error, content) => {
     if (error) {
       response.writeHead(500, { "Content-Type": "text/plain" });
