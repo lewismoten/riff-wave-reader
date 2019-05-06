@@ -1,3 +1,6 @@
+- GH-46 Include reader in live demo
+- GH-44 Cache chunks
+
 # Version 0
 
 # v0.2
