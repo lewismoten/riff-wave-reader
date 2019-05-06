@@ -4,8 +4,8 @@ window.addEventListener("load", onLoad);
 
 var input;
 var audio;
-var blogLog;
-var out;
+var blobLog;
+var headersLog;
 var RiffWaveReader;
 
 function onLoad() {
