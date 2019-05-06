@@ -10,12 +10,20 @@ export class RiffWaveReader {
   }
 
   _read(offset, size) {
-    if (Array.isArray(this.reader)) {
+    const reader = this.reader;
+    if (Array.isArray(reader)) {
       return new Promise(resolve =>
-        resolve(this.reader.slice(offset, offset + size + 1))
+        resolve(reader.slice(offset, offset + size + 1))
+      );
+    } else if (
+      reader.constructor &&
+      reader.constructor.name === "ArrayBuffer"
+    ) {
+      return new Promise(resolve =>
+        resolve(new Int8Array(reader.slice(offset, offset + size + 1)))
       );
     }
-    return this.reader.read(offset, size);
+    return reader.read(offset, size);
   }
 
   readSample(channel, index) {

@@ -6,6 +6,8 @@ This library reads the data within RIFF file with it's contents formatted as a W
 
 # How to use
 
+## Node
+
 ```javascript
 import RiffWaveReader from "riff-wave-reader";
 import Reader from "riff-wave-reader/reader";
@@ -20,10 +22,11 @@ const array = data.split(" ").map(v => parseInt(v, 16));
 reader = new RiffWaveReader(array);
 
 // To handle large files without loading them completely into memory
-// from wrapped file, buffer, or array
+// from wrapped file, buffer, array, and array buffers
 reader = new RiffWaveReader(new Reader("./samples/hello.wav"));
 reader = new RiffWaveReader(new Reader(Buffer.from(array)));
 reader = new RiffWaveReader(new Reader(array));
+reader = new RiffWaveReader(new ArrayBuffer(array));
 
 // Read header chunks
 reader.readChunks().then(chunks => {
@@ -45,4 +48,27 @@ const channel = 0;
 const index = 0;
 reader.readSample(channel, index).then(sample => console.log(sample));
 // 127
+```
+
+## Web Browser
+
+```html
+<script type="text/javascript">
+  window.exports = {};
+</script>
+<script src="../lib/index.js" type="text/javascript"></script>
+<form><input type="file" change="changeFile(this.files)" /></form>
+<xmp id="riff"></xmp>
+<script type="text/javascript">
+  function changeFile(files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      var reader = new window.exports.RiffWaveReader(e.target.result);
+      reader.readChunks().then(function(chunks) {
+        riff.innerText = JSON.stringify(chunks, null, "  ");
+      });
+    };
+    reader.readAsArrayBuffer(blob);
+  }
+</script>
 ```
