@@ -37,6 +37,9 @@ export class RiffWaveReader {
     });
   }
   readChunks() {
+    if (this._chunks) {
+      return new Promise(resolve => resolve(this._chunks));
+    }
     return this._read(0, 44).then(buffer => {
       // RIFF
       const tag = ascii(buffer, 0, 4);
@@ -100,11 +103,11 @@ export class RiffWaveReader {
         if (dataChunk.id !== "data") throw errorDataId;
       }
 
-      return {
+      return (this._chunks = {
         riff: riffChunk,
         format: formatChunk,
         data: dataChunk
-      };
+      });
     });
   }
 }
