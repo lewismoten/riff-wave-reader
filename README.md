@@ -4,6 +4,9 @@
 
 This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.
 
+![Example Waveform](./docs/example-waveform.png)
+[Live Demo](https://lewismoten.github.io/riff-wave-reader/)
+
 # How to use
 
 ## Node
