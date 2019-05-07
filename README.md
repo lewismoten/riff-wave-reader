@@ -77,13 +77,10 @@ The chunks would be written out as:
 }
 ```
 
-#
-
-````
-
 ## Web Browser
 
 ```html
+<script type="text/javascript">
   window.exports = {};
 </script>
 <script src="../lib/index.js" type="text/javascript"></script>
@@ -101,8 +98,4 @@ The chunks would be written out as:
     reader.readAsArrayBuffer(blob);
   }
 </script>
-````
-
-```
-
 ```
