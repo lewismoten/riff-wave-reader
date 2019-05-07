@@ -64,10 +64,15 @@ function showDetails(blob) {
 function showWaveForm(reader, chunks) {
   var channel = 0;
   var count = chunks.format.sampleCount;
-  var width = 1024;
-  var height = 128;
+  var width = 128;
+  var height = 32;
   ctx.moveTo(0, height / 2);
-  readNext(0);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = "#0000ff44";
+  ctx.beginPath();
+  readNext(0).then(function() {
+    ctx.stroke();
+  });
   function readNext(i) {
     return reader.readSample(channel, i).then(function(value) {
       if (value < 0) {
@@ -79,7 +84,6 @@ function showWaveForm(reader, chunks) {
       var x = (i / count) * width;
       var y = (value / 255) * height;
       ctx.lineTo(x, y);
-      ctx.stroke();
       if (i < count) return readNext(++i);
     });
   }
