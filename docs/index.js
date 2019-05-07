@@ -65,24 +65,23 @@ function showDetails(blob) {
 }
 function showWaveForm(reader, chunks) {
   var channel = 0;
-  var count = chunks.format.sampleCount;
+  var count = chunks.data.sampleCount;
   var width = canvas.width;
   var height = canvas.height;
   ctx.moveTo(0, height / 2);
   ctx.lineWidth = 1;
   ctx.strokeStyle = "#0000ff44";
   ctx.beginPath();
-  readNext(0).then(function() {
-    ctx.stroke();
-  });
+  readNext(0)
+    .then(function() {
+      ctx.stroke();
+    })
+    .catch(function(e) {
+      alert(e);
+      ctx.stroke();
+    });
   function readNext(i) {
     return reader.readSample(channel, i).then(function(value) {
-      if (value < 0) {
-        value += 128;
-      } else if (value > 0) {
-        value -= 127;
-      }
-      value += 128;
       var x = (i / count) * width;
       var y = (value / 255) * height;
       ctx.lineTo(x, y);
