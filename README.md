@@ -4,17 +4,24 @@
 
 This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.
 
-![Example Waveform](./docs/example-waveform.png)
-[Live Demo](https://lewismoten.github.io/riff-wave-reader/)
+![Example Waveform](./docs/example-waveform.png)
+
+# How to use
+
+## Node
+
+````javascript
+import RiffWave
 
 # How to use
 
 ## Node
 
 ```javascript
-import RiffWaveReader from "riff-wave-reader";
 import Reader from "riff-wave-reader/reader";
 let reader;
+const channel = 0;
+const index = 0;
 
 // from array
 const data =
@@ -35,28 +42,48 @@ reader = new RiffWaveReader(new ArrayBuffer(array));
 reader.readChunks().then(chunks => {
   console.log(chunks);
 });
-/*
-{
-  riff: { tag: "RIFF", size: 4309, format: "WAVE" },
-  format: {
-    id: "fmt ", size: 16, type: 1, channels: 1, sampleRate: 8000,
-    byteRate: 8000, blockAlignment: 1, bitsPerSample: 8,
-    typeName: "PCM", sampleSize: 1, sampleStart: 44,
-    sampleCount: 4265, duration: 0.533125
-  },
-  data: { id: "data", size: 4273, start: 44 }
-}
-*/
-const channel = 0;
-const index = 0;
 reader.readSample(channel, index).then(sample => console.log(sample));
 // 127
+````
+
+The chunks would be written out as:
+
+```json
+{
+  "riff": {
+    "tag": "RIFF",
+    "size": 4309,
+    "format": "WAVE"
+  },
+  "format": {
+    "id": "fmt ",
+    "size": 16,
+    "type": 1,
+    "channels": 1,
+    "sampleRate": 8000,
+    "byteRate": 8000,
+    "blockAlignment": 1,
+    "bitsPerSample": 8,
+    "typeName": "PCM",
+    "sampleSize": 1
+  },
+  "data": {
+    "id": "data",
+    "size": 4273,
+    "start": 44,
+    "sampleCount": 4265,
+    "duration": 0.533125
+  }
+}
 ```
+
+#
+
+````
 
 ## Web Browser
 
 ```html
-<script type="text/javascript">
   window.exports = {};
 </script>
 <script src="../lib/index.js" type="text/javascript"></script>
@@ -74,4 +101,8 @@ reader.readSample(channel, index).then(sample => console.log(sample));
     reader.readAsArrayBuffer(blob);
   }
 </script>
+````
+
+```
+
 ```
