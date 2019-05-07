@@ -1,5 +1,11 @@
 # Version 0
 
+# v0.3
+
+## v0.3.0
+
+- GH-57 Fix sample count calculation
+
 # v0.2
 
 ## v0.2.2

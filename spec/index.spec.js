@@ -7,6 +7,38 @@ import path from "path";
 
 const file = path.join(__dirname, "../samples/hello.wav");
 export const errorOpeningFile = "Unable to open file";
+const descriptors = {
+  riff: {
+    tag: "RIFF",
+    size: 4309,
+    format: "WAVE"
+  },
+  format: {
+    id: "fmt ",
+    size: 16,
+    type: 1,
+    channels: 1,
+    sampleRate: 8000,
+    byteRate: 8000,
+    blockAlignment: 1,
+    bitsPerSample: 8,
+    typeName: "PCM",
+    sampleSize: 1
+  },
+  data: {
+    id: "data",
+    size: 4273,
+    start: 44,
+    sampleCount: 4265,
+    duration: 0.533125
+  }
+};
+// Unsigned Bytes got abovee 127
+const firstValue = 127;
+const secondValue = 128;
+const lastValue = 127;
+const penultimateValue = 127;
+const penultimate2Value = 128;
 
 describe("riff-wave-reader", () => {
   it("is function", () => {
@@ -17,34 +49,6 @@ describe("riff-wave-reader", () => {
     expect(typeof reader).toBe("object");
   });
   describe("desciptors", () => {
-    const descriptors = {
-      riff: {
-        tag: "RIFF",
-        size: 4309,
-        format: "WAVE"
-      },
-      format: {
-        id: "fmt ",
-        size: 16,
-        type: 1,
-        channels: 1,
-        sampleRate: 8000,
-        byteRate: 8000,
-        blockAlignment: 1,
-        bitsPerSample: 8,
-        typeName: "PCM",
-        sampleSize: 1,
-        sampleStart: 44,
-        sampleCount: 4265,
-        duration: 0.533125
-      },
-      data: {
-        id: "data",
-        size: 4273,
-        start: 44
-      }
-    };
-
     it("can read from file", done => {
       const reader = new RiffWaveReader(new Reader(file));
       reader
@@ -134,7 +138,7 @@ describe("riff-wave-reader", () => {
       });
       it("reads first channels first sample", done => {
         reader.readSample(0, 0).then(sample => {
-          expect(sample).toBe(0x7f);
+          expect(sample).toBe(firstValue);
           done();
         });
       });
@@ -163,38 +167,21 @@ describe("riff-wave-reader", () => {
         .then(done);
     });
     it("matches snapshot", () => {
-      expect(riff).toEqual({
-        tag: "RIFF",
-        size: 4309,
-        format: "WAVE"
-      });
+      expect(riff).toEqual(descriptors.riff);
     });
     it("can read tag", () => {
-      expect(riff.tag).toBe("RIFF");
+      expect(riff.tag).toBe(descriptors.riff.tag);
     });
     it("can read size", () => {
-      expect(riff.size).toBe(4309);
+      expect(riff.size).toBe(descriptors.riff.size);
     });
     it("can read format", () => {
-      expect(riff.format).toBe("WAVE");
+      expect(riff.format).toBe(descriptors.riff.format);
     });
   });
   describe("Format Chunk", () => {
     let reader;
     let format;
-    const id = "fmt ";
-    const size = 16;
-    const type = 1;
-    const typeName = "PCM";
-    const channels = 1;
-    const sampleRate = 8000;
-    const byteRate = 8000;
-    const blockAlignment = 1;
-    const bitsPerSample = 8;
-    const sampleSize = 1;
-    const sampleCount = 4265;
-    const duration = 0.533125;
-    const sampleStart = 44;
     beforeAll(done => {
       reader = new RiffWaveReader(new Reader(file));
       reader
@@ -205,66 +192,59 @@ describe("riff-wave-reader", () => {
         .then(done);
     });
     it("matches snapshot", () => {
-      expect(format).toEqual({
-        id,
-        size,
-        type,
-        typeName,
-        channels,
-        sampleRate,
-        byteRate,
-        blockAlignment,
-        bitsPerSample,
-        sampleSize,
-        sampleCount,
-        duration,
-        sampleStart
-      });
+      expect(format).toEqual(descriptors.format);
     });
     it("can read id", () => {
-      expect(format.id).toBe(id);
+      expect(format.id).toBe(descriptors.format.id);
     });
     it("can read size", () => {
-      expect(format.size).toBe(size);
+      expect(format.size).toBe(descriptors.format.size);
     });
     it("can read type", () => {
-      expect(format.type).toBe(type);
+      expect(format.type).toBe(descriptors.format.type);
     });
     it("can read typeName", () => {
-      expect(format.typeName).toBe(typeName);
+      expect(format.typeName).toBe(descriptors.format.typeName);
     });
     it("can read channels", () => {
-      expect(format.channels).toBe(channels);
+      expect(format.channels).toBe(descriptors.format.channels);
     });
     it("can read sample rate", () => {
-      expect(format.sampleRate).toBe(sampleRate);
+      expect(format.sampleRate).toBe(descriptors.format.sampleRate);
     });
     it("can read byte rate", () => {
-      expect(format.byteRate).toBe(byteRate);
+      expect(format.byteRate).toBe(descriptors.format.byteRate);
     });
     it("calculates sample size", () => {
-      expect(format.sampleSize).toBe(sampleSize);
+      expect(format.sampleSize).toBe(descriptors.format.sampleSize);
     });
     it("calculates sample count", () => {
-      expect(format.sampleCount).toBe(sampleCount);
+      expect(format.sampleCount).toBe(descriptors.format.sampleCount);
     });
     it("calculates sample start", () => {
-      expect(format.sampleStart).toBe(sampleStart);
+      expect(format.sampleStart).toBe(descriptors.format.sampleStart);
     });
     it("calculates duration in fractional seconds", () => {
-      expect(format.duration).toBe(duration);
+      expect(format.duration).toBe(descriptors.format.duration);
     });
     it("has valid byte rate", () => {
-      expect(format.byteRate).toBe((sampleRate * channels * bitsPerSample) / 8);
+      expect(format.byteRate).toBe(
+        (descriptors.format.sampleRate *
+          descriptors.format.channels *
+          descriptors.format.bitsPerSample) /
+          8
+      );
     });
     it("can read block alignment", () => {
-      expect(format.blockAlignment).toBe(blockAlignment);
+      expect(format.blockAlignment).toBe(descriptors.format.blockAlignment);
     });
     it("has valid block alignment", () => {
-      expect(format.blockAlignment).toBe((channels * bitsPerSample) / 8);
+      expect(format.blockAlignment).toBe(
+        (descriptors.format.channels * descriptors.format.bitsPerSample) / 8
+      );
     });
     it("can read bits per sample", () => {
-      expect(format.bitsPerSample).toBe(bitsPerSample);
+      expect(format.bitsPerSample).toBe(descriptors.format.bitsPerSample);
     });
   });
   describe("Data Chunk Header", () => {
@@ -280,14 +260,21 @@ describe("riff-wave-reader", () => {
         .then(done);
     });
     it("can read id", () => {
-      expect(dataHeader.id).toBe("data");
+      expect(dataHeader.id).toBe(descriptors.data.id);
     });
     it("can read size", () => {
-      expect(dataHeader.size).toBe(4273);
+      expect(dataHeader.size).toBe(descriptors.data.size);
     });
     it("calculates start position", () => {
-      // should be same as riff.size + 4
-      expect(dataHeader.start).toBe(44);
+      const tagSize = 4;
+      const lengthSize = 4;
+      const tlvSize = tagSize + lengthSize;
+      const riffHeaderSize = tlvSize + 4;
+      const dataHeaderSize = tlvSize;
+      const formatHeaderSize = descriptors.format.size + tlvSize;
+      expect(dataHeader.start).toBe(
+        riffHeaderSize + formatHeaderSize + dataHeaderSize
+      );
     });
   });
   describe("Sample", () => {
@@ -297,7 +284,7 @@ describe("riff-wave-reader", () => {
       reader
         .readSample(channel, 0)
         .then(sample => {
-          expect(sample).toBe(0x7f);
+          expect(sample).toBe(firstValue);
         })
         .then(done);
     });
@@ -306,18 +293,18 @@ describe("riff-wave-reader", () => {
       reader
         .readSample(channel, 1)
         .then(sample => {
-          expect(sample).toBe(0x80);
+          expect(sample).toBe(secondValue);
         })
         .then(done);
     });
     it("can read last sample", done => {
       const reader = new RiffWaveReader(new Reader(file));
       // 81 81 81 81 80 80 80 7F [7F] 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ format }) => {
+      reader.readChunks().then(({ data }) => {
         reader
-          .readSample(channel, format.sampleCount - 1)
+          .readSample(channel, data.sampleCount - 1)
           .then(sample => {
-            expect(sample).toBe(0x7f);
+            expect(sample).toBe(lastValue);
           })
           .then(done);
       });
@@ -325,11 +312,23 @@ describe("riff-wave-reader", () => {
     it("can read penultimate sample", done => {
       const reader = new RiffWaveReader(new Reader(file));
       // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ format }) => {
+      reader.readChunks().then(({ data }) => {
         reader
-          .readSample(channel, format.sampleCount - 2)
+          .readSample(channel, data.sampleCount - 2)
           .then(sample => {
-            expect(sample).toBe(0x7f);
+            expect(sample).toBe(penultimateValue);
+          })
+          .then(done);
+      });
+    });
+    it("can read penultimate2 sample", done => {
+      const reader = new RiffWaveReader(new Reader(file));
+      // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
+      reader.readChunks().then(({ data }) => {
+        reader
+          .readSample(channel, data.sampleCount - 3)
+          .then(sample => {
+            expect(sample).toBe(penultimate2Value);
           })
           .then(done);
       });
