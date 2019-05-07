@@ -7,6 +7,7 @@ var audio;
 var blobLog;
 var headersLog;
 var ctx;
+var canvas;
 var RiffWaveReader;
 
 function onLoad() {
@@ -15,7 +16,7 @@ function onLoad() {
   audio = document.getElementById("audio");
   blobLog = document.getElementById("blobLog");
   headersLog = document.getElementById("headersLog");
-  var canvas = document.getElementById("canvas");
+  canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
   input.addEventListener("change", onChanged, false);
 }
@@ -25,6 +26,7 @@ function onChanged() {
   audio.src = "";
   blobLog.innerText = "";
   headersLog.innerText = "";
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   if (count === 0) return;
   if (this.files[0].type !== "audio/wav") return;
@@ -64,8 +66,8 @@ function showDetails(blob) {
 function showWaveForm(reader, chunks) {
   var channel = 0;
   var count = chunks.format.sampleCount;
-  var width = 128;
-  var height = 32;
+  var width = canvas.width;
+  var height = canvas.height;
   ctx.moveTo(0, height / 2);
   ctx.lineWidth = 1;
   ctx.strokeStyle = "#0000ff44";
