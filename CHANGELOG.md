@@ -2,6 +2,13 @@
 
 # v0.2
 
+## v0.2.2
+
+- GH-54 Link to liv demo
+- GH-50 Show wave form in live demo
+- GH-46 Include reader in live demo
+- GH-44 Cache chunks
+
 ## v0.2.1
 
 - GH-14 Load wave file via live demo

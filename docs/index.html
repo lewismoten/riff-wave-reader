@@ -9,7 +9,7 @@
     />
     <meta name="author" content="Lewis Moten" />
     <script src="./index.js" type="text/javascript"></script>
-    <script src="../lib/index.js" type="text/javascript"></script>
+    <script src="./riff-wave-reader.js" type="text/javascript"></script>
   </head>
   <body>
     <h1>Riff Wave Reader Documentation</h1>
@@ -18,7 +18,8 @@
       as a WAVE file containing PCM data.
     </p>
     <form>Wave File: <input type="file" id="file" /></form>
-    <audio id="audio" preload controls="controls"></audio>
+    <audio id="audio" preload controls="controls"></audio><br />
+    <canvas id="canvas" width="128" height="32"></canvas>
     <xmp id="blobLog"></xmp>
     <xmp id="headersLog"></xmp>
   </body>
