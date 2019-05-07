@@ -1,3 +1,5 @@
+- GH-54 Link to liv demo
+- GH-50 Show wave form in live demo
 - GH-46 Include reader in live demo
 - GH-44 Cache chunks
 
