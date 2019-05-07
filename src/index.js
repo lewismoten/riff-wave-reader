@@ -27,13 +27,15 @@ export class RiffWaveReader {
   }
 
   readSample(channel, index) {
-    return this.readChunks().then(({ format }) => {
+    return this.readChunks().then(({ format, data }) => {
       const position =
-        format.sampleStart +
+        data.start +
         index * format.sampleSize +
         (channel * format.bitsPerSample) / 8;
       const size = format.bitsPerSample / 8;
-      return this._read(position, size).then(buffer => int8(buffer, 0));
+      return this._read(position, size).then(buffer => {
+        return uint8(buffer, 0);
+      });
     });
   }
   readChunks() {
@@ -67,15 +69,13 @@ export class RiffWaveReader {
       const typeName = type === 1 ? "PCM" : unknown;
       const sampleSize = (channels * bitsPerSample) / 8;
 
-      const tlvSize = 8;
-      const riffChunkSize = tlvSize + 4;
+      const tagSize = 4;
+      const lengthSize = 4;
+      const tlvSize = tagSize + lengthSize;
+      const riffChunkSize = tlvSize + 4; // WAVE
       const formatChunkSize = tlvSize + formatSize;
-      const dataChunkOffset = tlvSize;
-      const sampleStart = riffChunkSize + formatChunkSize + dataChunkOffset;
+      const dataChunkStart = riffChunkSize + formatChunkSize;
 
-      let rawDataSize = riffSize - sampleStart;
-      const sampleCount = rawDataSize / ((channels * bitsPerSample) / 8);
-      const duration = sampleCount / sampleRate;
       const formatChunk = {
         id,
         size: formatSize,
@@ -86,22 +86,25 @@ export class RiffWaveReader {
         blockAlignment,
         bitsPerSample,
         typeName,
-        sampleSize,
-        sampleStart,
-        sampleCount,
-        duration
+        sampleSize
       };
 
       // Data
       let dataChunk;
-      if (formatSize === 16) {
-        dataChunk = {
-          id: ascii(buffer, 36, 4),
-          size: int32(buffer, 40),
-          start: 44
-        };
-        if (dataChunk.id !== "data") throw errorDataId;
-      }
+      const dataId = ascii(buffer, dataChunkStart, tagSize);
+      if (dataId !== "data") throw errorDataId;
+      const dataSize = int32(buffer, dataChunkStart + tagSize);
+      const sampleStart = dataChunkStart + tlvSize;
+      const sampleCount =
+        (dataSize - tlvSize) / ((channels * bitsPerSample) / 8);
+      const duration = sampleCount / sampleRate;
+      dataChunk = {
+        id: dataId,
+        size: dataSize,
+        start: sampleStart,
+        sampleCount,
+        duration
+      };
 
       return (this._chunks = {
         riff: riffChunk,
@@ -120,9 +123,12 @@ const ascii = (source, position, length) => {
   }
   return value;
 };
-const int8 = (source, position) => littleEndian(source, position, 1);
+const uint8 = (source, position) => littleEndianU(source, position, 1);
 const int16 = (source, position) => littleEndian(source, position, 2);
 const int32 = (source, position) => littleEndian(source, position, 4);
+const littleEndianU = (source, position, length) => {
+  return new Uint8Array(source, position, length)[0];
+};
 const littleEndian = (source, position, length) => {
   let value = 0;
   for (let i = length - 1; i >= 0; i--) {
