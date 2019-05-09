@@ -1,3 +1,9 @@
+# Version 0
+
+# v0.3
+
+## v0.3.1
+
 - GH-38 Add package size badge
 - GH-54 Remove package bloat
 - GH-40 Doc npm install, add badge
@@ -5,10 +11,6 @@
 - GH-40 Fix readme formatting code block GH-57
 - GH-40 Update web browser example due to GH-46
 - GH-40 Fix changelog typo due to GH-54
-
-# Version 0
-
-# v0.3
 
 ## v0.3.0
 
