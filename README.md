@@ -1,17 +1,20 @@
 # Riff Wave Reader
 
 [![Build Status](https://travis-ci.org/lewismoten/riff-wave-reader.svg?branch=master)](https://travis-ci.org/lewismoten/riff-wave-reader)
+[![npm version](https://badge.fury.io/js/riff-wave-reader.svg)](https://www.npmjs.com/package/riff-wave-reader)
+[![install size](https://packagephobia.now.sh/badge?p=riff-wave-reader)](https://packagephobia.now.sh/result?p=riff-wave-reader)
 
 This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.
 
-![Example Waveform](./docs/example-waveform.png)
+[Live Demo ![Example Waveform](./docs/example-waveform.png)](https://lewismoten.github.io/riff-wave-reader/)
 
-# How to use
+# Installation
 
-## Node
+This npm package is available as [riff-wave-reader](https://www.npmjs.com/package/riff-wave-reader)
 
-````javascript
-import RiffWave
+From your terminal, install with the following command.
+
+`npm install riff-wave-reader --save`
 
 # How to use
 
@@ -83,19 +86,18 @@ The chunks would be written out as:
 <script type="text/javascript">
   window.exports = {};
 </script>
-<script src="../lib/index.js" type="text/javascript"></script>
-<form><input type="file" change="changeFile(this.files)" /></form>
-<xmp id="riff"></xmp>
+<script src="riff-wave-reader.js" type="text/javascript"></script>
+<input type="file" change="changeFile(this.files)" />
 <script type="text/javascript">
   function changeFile(files) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      var reader = new window.exports.RiffWaveReader(e.target.result);
-      reader.readChunks().then(function(chunks) {
-        riff.innerText = JSON.stringify(chunks, null, "  ");
+    const fileReader = new FileReader();
+    fileReader.onload = function(e) {
+      var riffReader = new window.exports.RiffWaveReader(e.target.result);
+      riffReader.readChunks().then(function(chunks) {
+        console.log(chunks);
       });
     };
-    reader.readAsArrayBuffer(blob);
+    fileReader.readAsArrayBuffer(blob);
   }
 </script>
 ```
