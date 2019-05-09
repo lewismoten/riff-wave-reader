@@ -15,6 +15,7 @@ samples
 
 # build
 .travis.yml
+lib/*.map
 
 # run commands
 .*rc
