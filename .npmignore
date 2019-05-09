@@ -17,6 +17,9 @@ samples
 .travis.yml
 lib/*.map
 
+# debug
+scripts
+
 # run commands
 .*rc
 .*rc.js
