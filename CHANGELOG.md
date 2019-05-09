@@ -2,6 +2,7 @@
 - GH-40 Fix readme live demo link from GH-57
 - GH-40 Fix readme formatting code block GH-57
 - GH-40 Update web browser example due to GH-46
+- GH-40 Fix changelog typo due to GH-54
 
 # Version 0
 
