@@ -3,6 +3,9 @@
 # raw source code
 src
 
+# documentation / demo
+docs
+
 # tests
 spec
 samples
@@ -12,6 +15,10 @@ samples
 
 # build
 .travis.yml
+lib/*.map
+
+# debug
+scripts
 
 # run commands
 .*rc

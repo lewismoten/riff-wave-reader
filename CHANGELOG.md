@@ -1,3 +1,4 @@
+- GH-54 Remove package bloat
 - GH-40 Doc npm install, add badge
 - GH-40 Fix readme live demo link from GH-57
 - GH-40 Fix readme formatting code block GH-57
