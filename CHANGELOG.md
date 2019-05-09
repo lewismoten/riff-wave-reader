@@ -1,3 +1,9 @@
+- GH-40 Doc npm install, add badge
+- GH-40 Fix readme live demo link from GH-57
+- GH-40 Fix readme formatting code block GH-57
+- GH-40 Update web browser example due to GH-46
+- GH-40 Fix changelog typo due to GH-54
+
 # Version 0
 
 # v0.3
@@ -10,7 +16,7 @@
 
 ## v0.2.2
 
-- GH-54 Link to liv demo
+- GH-54 Link to live demo
 - GH-50 Show wave form in live demo
 - GH-46 Include reader in live demo
 - GH-44 Cache chunks
