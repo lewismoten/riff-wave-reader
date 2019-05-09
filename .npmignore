@@ -3,6 +3,9 @@
 # raw source code
 src
 
+# documentation / demo
+docs
+
 # tests
 spec
 samples
