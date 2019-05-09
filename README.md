@@ -6,12 +6,13 @@ This library reads the data within RIFF file with it's contents formatted as a W
 
 ![Example Waveform](./docs/example-waveform.png)
 
-# How to use
+# Installation
 
-## Node
+This npm package is available as [riff-wave-reader](https://www.npmjs.com/package/riff-wave-reader)
 
-````javascript
-import RiffWave
+From your terminal, install with the following command.
+
+`npm install riff-wave-reader --save`
 
 # How to use
 
