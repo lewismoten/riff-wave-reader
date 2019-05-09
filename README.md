@@ -85,19 +85,18 @@ The chunks would be written out as:
 <script type="text/javascript">
   window.exports = {};
 </script>
-<script src="../lib/index.js" type="text/javascript"></script>
-<form><input type="file" change="changeFile(this.files)" /></form>
-<xmp id="riff"></xmp>
+<script src="riff-wave-reader.js" type="text/javascript"></script>
+<input type="file" change="changeFile(this.files)" />
 <script type="text/javascript">
   function changeFile(files) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      var reader = new window.exports.RiffWaveReader(e.target.result);
-      reader.readChunks().then(function(chunks) {
-        riff.innerText = JSON.stringify(chunks, null, "  ");
+    const fileReader = new FileReader();
+    fileReader.onload = function(e) {
+      var riffReader = new window.exports.RiffWaveReader(e.target.result);
+      riffReader.readChunks().then(function(chunks) {
+        console.log(chunks);
       });
     };
-    reader.readAsArrayBuffer(blob);
+    fileReader.readAsArrayBuffer(blob);
   }
 </script>
 ```
