@@ -1,3 +1,8 @@
+- GH-40 Doc npm install, add badge
+- GH-40 Fix readme live demo link from GH-57
+- GH-40 Fix readme formatting code block GH-57
+- GH-40 Update web browser example due to GH-46
+
 # Version 0
 
 # v0.3
