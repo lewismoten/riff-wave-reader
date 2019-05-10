@@ -20,7 +20,7 @@ export class RiffWaveReader {
       reader.constructor.name === "ArrayBuffer"
     ) {
       return new Promise(resolve =>
-        resolve(new Int8Array(reader.slice(offset, offset + size + 1)))
+        resolve(new Uint8Array(reader.slice(offset, offset + size + 1)))
       );
     }
     return reader.read(offset, size);
