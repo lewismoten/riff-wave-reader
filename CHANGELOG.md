@@ -1,3 +1,5 @@
+- GH-4 Get stereo working, read array buffer as unsigned bytes
+
 # Version 0
 
 # 0.3
