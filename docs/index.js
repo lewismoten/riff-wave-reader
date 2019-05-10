@@ -6,8 +6,8 @@ var input;
 var audio;
 var blobLog;
 var headersLog;
-var ctx;
-var canvas;
+var contexts = [];
+var canvases = [];
 var RiffWaveReader;
 
 function onLoad() {
@@ -16,8 +16,10 @@ function onLoad() {
   audio = document.getElementById("audio");
   blobLog = document.getElementById("blobLog");
   headersLog = document.getElementById("headersLog");
-  canvas = document.getElementById("canvas");
-  ctx = canvas.getContext("2d");
+  canvases.push(document.getElementById("canvas1"));
+  canvases.push(document.getElementById("canvas2"));
+  contexts.push(canvases[0].getContext("2d"));
+  contexts.push(canvases[1].getContext("2d"));
   input.addEventListener("change", onChanged, false);
 }
 function onChanged() {
@@ -26,7 +28,9 @@ function onChanged() {
   audio.src = "";
   blobLog.innerText = "";
   headersLog.innerText = "";
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (var i = 0; i < contexts.length; i++) {
+    contexts[i].clearRect(0, 0, canvases[i].width, canvases[i].height);
+  }
 
   if (count === 0) return;
   if (this.files[0].type !== "audio/wav") return;
@@ -53,19 +57,22 @@ function showInPlayer(blob) {
   reader.readAsDataURL(blob);
 }
 function showDetails(blob) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(e) {
     var reader = new RiffWaveReader(e.target.result);
     reader.readChunks().then(function(chunks) {
       headersLog.innerText = JSON.stringify(chunks, null, "  ");
-      showWaveForm(reader, chunks);
+      for (var channel = 0; channel < chunks.format.channels; channel++) {
+        showWaveForm(reader, chunks, channel);
+      }
     });
   };
-  reader.readAsArrayBuffer(blob);
+  fileReader.readAsArrayBuffer(blob);
 }
-function showWaveForm(reader, chunks) {
-  var channel = 0;
+function showWaveForm(reader, chunks, channel) {
   var count = chunks.data.sampleCount;
+  var canvas = canvases[channel];
+  var ctx = contexts[channel];
   var width = canvas.width;
   var height = canvas.height;
   ctx.moveTo(0, height / 2);
