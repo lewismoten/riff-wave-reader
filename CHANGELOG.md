@@ -1,3 +1,4 @@
+- GH-15 Test 8-bit 16khz
 - GH-4 Get stereo working, read array buffer as unsigned bytes
 
 # Version 0
