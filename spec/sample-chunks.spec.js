@@ -18,6 +18,7 @@ describe("Sample Headers", () => {
   it(`8-bit-16khz-mono-04.wav`, () => hasExpectedHeaders("8-bit-16khz-mono-04"));
   it(`8-bit-16khz-stereo-01.wav`, () => hasExpectedHeaders("8-bit-16khz-stereo-01"));
   it(`8-bit-16khz-stereo-02.wav`, () => hasExpectedHeaders("8-bit-16khz-stereo-02"));
+  it(`16-bit-4khz-mono-01.wav`, () => hasExpectedHeaders("16-bit-4khz-mono-01"));
 });
 const hasExpectedHeaders = name => {
   return new RiffWaveReader(new Reader(path.join(__dirname, `../samples/${name}.wav`)))
