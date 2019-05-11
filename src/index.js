@@ -128,6 +128,7 @@ const ascii = (source, position, length) => {
   return value;
 };
 const uint8 = (source, position) => littleEndianU(source, position, 1);
+const uint16 = (source, position) => littleEndianU(source, position, 2);
 const int16 = (source, position) => littleEndian(source, position, 2);
 const int32 = (source, position) => littleEndianU(source, position, 4);
 
