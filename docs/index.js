@@ -91,19 +91,20 @@ function showWaveForm(reader, chunks, channel) {
   function readNext(i) {
     return reader.readSample(channel, i).then(function(value) {
       var x = (i / count) * width;
-      var y = getY(value);
+      var y = getPercent(value) * height;
       ctx.lineTo(x, y);
       if (++i !== count) return readNext(i);
     });
   }
-  function getY(value) {
+  function getPercent(value) {
     switch(sampleSize) {
       default:
       case 1:
-        return (value / 255) * height;
+        // uint8
+        return (value / 255);
       case 2:
-        //return (value / 65535) * height;
-        return ((value + 32768) / 65535) * height;
+        // int16 -> uint16
+        return ((value + 32768) / 65535);
     }
   }
 }
