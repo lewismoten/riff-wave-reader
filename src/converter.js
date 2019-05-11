@@ -7,7 +7,6 @@ export const ascii = (source, position, length) => {
 };
 export const uint8 = (source, position) => littleEndianU(source, position, 1);
 export const uint16 = (source, position) => littleEndianU(source, position, 2);
-// TODO: Getting int16 values less than 32768. Start testing min/max/-1/0/1
 export const int16 = (source, position) => littleEndian(source, position, 2);
 export const int32 = (source, position) => littleEndianU(source, position, 4);
 
