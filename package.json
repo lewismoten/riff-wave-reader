@@ -6,8 +6,7 @@
   "main": "./lib/index.js",
   "scripts": {
     "test": "babel-node spec/run.js",
-    "build": "babel src --out-dir ./lib --source-maps",
-    "postbuild": "babel src/index.js --out-file ./docs/riff-wave-reader.js --source-maps inline",
+    "build": "webpack",
     "start": "node ./scripts/start.js"
   },
   "repository": {
