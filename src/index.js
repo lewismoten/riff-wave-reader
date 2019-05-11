@@ -3,7 +3,7 @@ import {
   uint8,
   uint16,
   int16,
-  int32
+  uint32
 } from "./converter";
 
 const errorRiffTag = "RIFF chunk has wrong tag.";
@@ -60,7 +60,7 @@ export class RiffWaveReader {
       const tag = ascii(buffer, 0, 4);
       if (tag !== "RIFF") throw errorRiffTag;
 
-      let riffSize = int32(buffer, 4);
+      let riffSize = uint32(buffer, 4);
 
       const format = ascii(buffer, 8, 4);
       if (format !== "WAVE") errorRiffFormat;
@@ -70,11 +70,11 @@ export class RiffWaveReader {
       // Format
       const id = ascii(buffer, 12, 4);
       if (id !== "fmt ") throw errorFormatId;
-      const formatSize = int32(buffer, 16);
+      const formatSize = uint32(buffer, 16);
       const type = uint16(buffer, 20);
       const channels = uint16(buffer, 22);
-      const sampleRate = int32(buffer, 24);
-      const byteRate = int32(buffer, 28);
+      const sampleRate = uint32(buffer, 24);
+      const byteRate = uint32(buffer, 28);
       const blockAlignment = uint16(buffer, 32);
       const bitsPerSample = uint16(buffer, 34);
 
@@ -106,7 +106,7 @@ export class RiffWaveReader {
       let dataChunk;
       const dataId = ascii(buffer, dataChunkStart, tagSize);
       if (dataId !== "data") throw errorDataId;
-      const dataSize = int32(buffer, dataChunkStart + tagSize);
+      const dataSize = uint32(buffer, dataChunkStart + tagSize);
       const sampleStart = dataChunkStart + tlvSize;
       const sampleCount = dataSize / blockAlignment;
       const duration = sampleCount / sampleRate;
