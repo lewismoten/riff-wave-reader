@@ -63,12 +63,12 @@ export class RiffWaveReader {
       const id = ascii(buffer, 12, 4);
       if (id !== "fmt ") throw errorFormatId;
       const formatSize = int32(buffer, 16);
-      const type = int16(buffer, 20);
-      const channels = int16(buffer, 22);
+      const type = uint16(buffer, 20);
+      const channels = uint16(buffer, 22);
       const sampleRate = int32(buffer, 24);
       const byteRate = int32(buffer, 28);
-      const blockAlignment = int16(buffer, 32);
-      const bitsPerSample = int16(buffer, 34);
+      const blockAlignment = uint16(buffer, 32);
+      const bitsPerSample = uint16(buffer, 34);
 
       // Calculations
       const typeName = type === 1 ? "PCM" : unknown;
@@ -129,11 +129,8 @@ const ascii = (source, position, length) => {
 };
 const uint8 = (source, position) => littleEndianU(source, position, 1);
 const int16 = (source, position) => littleEndian(source, position, 2);
-const int32 = (source, position) => littleEndian(source, position, 4);
+const int32 = (source, position) => littleEndianU(source, position, 4);
 const littleEndianU = (source, position, length) => {
-  return new Uint8Array(source, position, length)[0];
-};
-const littleEndian = (source, position, length) => {
   let value = 0;
   for (let i = length - 1; i >= 0; i--) {
     value *= 0b100000000;
