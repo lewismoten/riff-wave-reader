@@ -20,13 +20,10 @@ export default {
 };
 
 const littleEndian = (source, position, length) => {
-  let value = 0;
-  for (let i = length - 1; i >= 0; i--) {
-    value <<= 8;
-    value |= source[position + i];
-  }
-  if (length === 2) {
-    value |= 0xffff0000;
+  let value = littleEndianU(source, position, length);
+  const max = Math.pow(2, length * 8);
+  if (value > max / 2 - 1) {
+      value -= max
   }
   return value;
 }
