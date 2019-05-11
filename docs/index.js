@@ -92,7 +92,7 @@ function showWaveForm(reader, chunks, channel) {
       var x = (i / count) * width;
       var y = (value / 255) * height;
       ctx.lineTo(x, y);
-      if (i < count) return readNext(++i);
+      if (++i !== count) return readNext(i);
     });
   }
 }
