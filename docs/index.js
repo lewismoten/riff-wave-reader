@@ -71,6 +71,7 @@ function showDetails(blob) {
 }
 function showWaveForm(reader, chunks, channel) {
   var count = chunks.data.sampleCount;
+  var sampleSize = chunks.format.sampleSize;
   var canvas = canvases[channel];
   var ctx = contexts[channel];
   var width = canvas.width;
@@ -90,9 +91,19 @@ function showWaveForm(reader, chunks, channel) {
   function readNext(i) {
     return reader.readSample(channel, i).then(function(value) {
       var x = (i / count) * width;
-      var y = (value / 255) * height;
+      var y = getY(value);
       ctx.lineTo(x, y);
       if (++i !== count) return readNext(i);
     });
+  }
+  function getY(value) {
+    switch(sampleSize) {
+      default:
+      case 1:
+        return (value / 255) * height;
+      case 2:
+        //return (value / 65535) * height;
+        return ((value + 32768) / 65535) * height;
+    }
   }
 }
