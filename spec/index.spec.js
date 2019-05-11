@@ -30,7 +30,7 @@ const descriptors = {
     size: 4273,
     start: 44,
     sampleCount: 4273,
-    duration: 0.533125
+    duration: 0.534125
   }
 };
 // Unsigned Bytes got abovee 127
