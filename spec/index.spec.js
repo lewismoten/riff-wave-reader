@@ -29,7 +29,7 @@ const descriptors = {
     id: "data",
     size: 4273,
     start: 44,
-    sampleCount: 4265,
+    sampleCount: 4273,
     duration: 0.533125
   }
 };
