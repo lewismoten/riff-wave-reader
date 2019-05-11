@@ -130,6 +130,19 @@ const ascii = (source, position, length) => {
 const uint8 = (source, position) => littleEndianU(source, position, 1);
 const int16 = (source, position) => littleEndian(source, position, 2);
 const int32 = (source, position) => littleEndianU(source, position, 4);
+
+const littleEndian = (source, position, length) => {
+  let value = source[length - 1];
+  for (let i = length - 2; i >= 0; i--) {
+    value <<= 8;
+    value |= source[position + i];
+  }
+  if (length === 2) {
+    value |= 0xffff0000;
+  }
+  return value;
+}
+
 const littleEndianU = (source, position, length) => {
   let value = 0;
   for (let i = length - 1; i >= 0; i--) {
