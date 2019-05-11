@@ -11,7 +11,7 @@ describe("Signed 16 bit wave file", () => {
     let reader;
     let sampleCount;
     const lastSamples = [
-      0x4eda, 0x45a6, 0x689b, 0xbdbe
+      -9650, -22971, -25752, -16707
     ];
 
     beforeAll((done) => {
