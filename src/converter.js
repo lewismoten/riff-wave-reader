@@ -20,8 +20,8 @@ export default {
 };
 
 const littleEndian = (source, position, length) => {
-  let value = source[length - 1];
-  for (let i = length - 2; i >= 0; i--) {
+  let value = 0;
+  for (let i = length - 1; i >= 0; i--) {
     value <<= 8;
     value |= source[position + i];
   }
