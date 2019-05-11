@@ -36,8 +36,8 @@ export class RiffWaveReader {
       return this._read(position, size).then(buffer => {
         switch(size) {
           default:
-          case 8:return uint8(buffer, 0);
-          case 16: return int16(buffer, 0);
+          case 1:return uint8(buffer, 0);
+          case 2: return int16(buffer, 0);
         }
 
       });
