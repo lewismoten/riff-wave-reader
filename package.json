@@ -28,6 +28,7 @@
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
     "husky": "^2.2.0",
-    "jasmine": "^3.4.0"
+    "jasmine": "^3.4.0",
+    "webpack": "^4.31.0"
   }
 }
