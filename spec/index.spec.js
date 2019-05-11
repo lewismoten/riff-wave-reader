@@ -36,9 +36,6 @@ const descriptors = {
 // Unsigned Bytes got abovee 127
 const firstValue = 127;
 const secondValue = 128;
-const lastValue = 127;
-const penultimateValue = 127;
-const penultimate2Value = 128;
 
 describe("riff-wave-reader", () => {
   it("is function", () => {
@@ -297,41 +294,25 @@ describe("riff-wave-reader", () => {
         })
         .then(done);
     });
-    it("can read last sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      // 81 81 81 81 80 80 80 7F [7F] 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ data }) => {
-        reader
-          .readSample(channel, data.sampleCount - 1)
-          .then(sample => {
-            expect(sample).toBe(lastValue);
-          })
-          .then(done);
-      });
-    });
-    it("can read penultimate sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ data }) => {
-        reader
-          .readSample(channel, data.sampleCount - 2)
-          .then(sample => {
-            expect(sample).toBe(penultimateValue);
-          })
-          .then(done);
-      });
-    });
-    it("can read penultimate2 sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ data }) => {
-        reader
-          .readSample(channel, data.sampleCount - 3)
-          .then(sample => {
-            expect(sample).toBe(penultimate2Value);
-          })
-          .then(done);
-      });
-    });
+
+      describe("read last samples", () => {
+        let reader;
+        let sampleCount;
+        const lastSamples = [
+          0x81, 0x81, 0x81, 0x80, 0x80, 0x80, 0x7f, 0x7f,
+          0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e
+        ];
+        beforeAll((done) => {
+          reader = new RiffWaveReader(new Reader(file));
+          return reader.readChunks().then(({ data }) => { sampleCount = data.sampleCount; done()})
+        });
+        for (let i = 0; i < lastSamples.length; i++) {
+          it(`can read last sample ${i + 1} of ${lastSamples.length}`, () => reader
+                  .readSample(channel, sampleCount - lastSamples.length + i)
+                  .then(actualValue => {
+                    expect(actualValue).toBe(lastSamples[i]);
+                  }));
+        }
+      })
   });
 });
