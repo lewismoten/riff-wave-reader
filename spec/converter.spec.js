@@ -2,7 +2,8 @@ import {
   uint8,
   uint16,
   int16,
-  uint32
+  uint32,
+  ascii
 } from "../src/converter.js";
 
 describe("converter", () => {
@@ -61,6 +62,24 @@ describe("converter", () => {
     });
     it("starts from specified position", () => {
       expect(uint32([0x00, 0x01, 0x02, 0x03, 0x04, 0x05], 1)).toBe(67305985);
+    });
+  });
+  describe("ascii", () => {
+    const hello = [0x48, 0x65, 0x6C, 0x6C, 0x6F];
+    it("reads chars", () => {
+      expect(ascii(hello, 0, 5)).toBe("Hello");
+    });
+    it("starts from specified position", () => {
+      expect(ascii(hello, 1, 3)).toBe("ell");
+    });
+    it("can read null", () => {
+      expect(ascii([0x48, 0x00, 0x48], 0, 3)).toBe("\x48\x00\x48");
+    });
+    it("can not read unicode (R)", () => {
+      expect(ascii([0xc2, 0xae], 0, 2)).not.toBe("\uc2ae");
+    });
+    it("can read ascii (R)", () => {
+      expect(ascii([0xae], 0, 1)).toBe("®");
     });
   });
 })
