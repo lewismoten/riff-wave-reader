@@ -1,3 +1,11 @@
+import {
+  ascii,
+  uint8,
+  uint16,
+  int16,
+  int32
+} from "./converter";
+
 const errorRiffTag = "RIFF chunk has wrong tag.";
 const errorRiffFormat = "RIFF chunk specifies invalid format";
 const errorFormatId = "Format chunk id is invalid";
@@ -119,37 +127,3 @@ export class RiffWaveReader {
   }
 }
 export default RiffWaveReader;
-
-const ascii = (source, position, length) => {
-  let value = "";
-  for (let i = 0; i < length; i++) {
-    value += String.fromCharCode(source[position + i]);
-  }
-  return value;
-};
-const uint8 = (source, position) => littleEndianU(source, position, 1);
-const uint16 = (source, position) => littleEndianU(source, position, 2);
-// TODO: Getting int16 values less than 32768. Start testing min/max/-1/0/1
-const int16 = (source, position) => littleEndian(source, position, 2);
-const int32 = (source, position) => littleEndianU(source, position, 4);
-
-const littleEndian = (source, position, length) => {
-  let value = source[length - 1];
-  for (let i = length - 2; i >= 0; i--) {
-    value <<= 8;
-    value |= source[position + i];
-  }
-  if (length === 2) {
-    value |= 0xffff0000;
-  }
-  return value;
-}
-
-const littleEndianU = (source, position, length) => {
-  let value = 0;
-  for (let i = length - 1; i >= 0; i--) {
-    value *= 0b100000000;
-    value += source[position + i];
-  }
-  return value;
-};
