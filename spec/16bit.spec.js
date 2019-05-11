@@ -6,13 +6,12 @@ import path from "path";
 const file = path.join(__dirname, "../samples/16-bit-4khz-mono-01.wav");
 const mono = 0;
 
-describe("16 bit wave file", () => {
+describe("Signed 16 bit wave file", () => {
       describe("read last samples", () => {
         let reader;
         let sampleCount;
         const lastSamples = [
-          0x81, 0x81, 0x81, 0x80, 0x80, 0x80, 0x7f, 0x7f,
-          0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e
+          0x4eda, 0x45a6, 0x689b, 0xbdbe
         ];
         beforeAll((done) => {
           reader = new RiffWaveReader(new Reader(file));
