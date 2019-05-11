@@ -95,8 +95,7 @@ export class RiffWaveReader {
       if (dataId !== "data") throw errorDataId;
       const dataSize = int32(buffer, dataChunkStart + tagSize);
       const sampleStart = dataChunkStart + tlvSize;
-      const sampleCount =
-        (dataSize - tlvSize) / ((channels * bitsPerSample) / 8);
+      const sampleCount = dataSize / blockAlignment;
       const duration = sampleCount / sampleRate;
       dataChunk = {
         id: dataId,
