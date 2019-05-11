@@ -34,7 +34,12 @@ export class RiffWaveReader {
         (channel * format.bitsPerSample) / 8;
       const size = format.bitsPerSample / 8;
       return this._read(position, size).then(buffer => {
-        return uint8(buffer, 0);
+        switch(size) {
+          default:
+          case 8:return uint8(buffer, 0);
+          case 16: return int16(buffer, 0);
+        }
+
       });
     });
   }
