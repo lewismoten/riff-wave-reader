@@ -1,7 +1,8 @@
 import {
   uint8,
   uint16,
-  int16
+  int16,
+  uint32
 } from "../src/converter.js";
 
 describe("converter", () => {
@@ -49,6 +50,17 @@ describe("converter", () => {
     });
     it("converts to max value", () => {
       expect(int16([0b11111111, 0b01111111], 0)).toBe(32767);
+    });
+  });
+  describe("uint32", () => {
+    it("converts to min value", () => {
+      expect(uint32([0x00, 0x00, 0x00, 0x00], 0)).toBe(0);
+    });
+    it("converts to max value", () => {
+      expect(uint32([0xff, 0xff, 0xff, 0xff], 0)).toBe(4294967295);
+    });
+    it("starts from specified position", () => {
+      expect(uint32([0x00, 0x01, 0x02, 0x03, 0x04, 0x05], 1)).toBe(67305985);
     });
   });
 })
