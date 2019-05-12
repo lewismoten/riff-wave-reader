@@ -69,7 +69,7 @@ function showDetails(blob) {
 }
 function showWaveForm(reader, chunks, channel) {
   var count = chunks.data.sampleCount;
-  var sampleSize = chunks.format.sampleSize;
+  var bitsPerSample = chunks.format.bitsPerSample;
   var canvas = canvases[channel];
   var ctx = contexts[channel];
   var width = canvas.width;
@@ -95,12 +95,12 @@ function showWaveForm(reader, chunks, channel) {
     });
   }
   function getPercent(value) {
-    switch(sampleSize) {
+    switch(bitsPerSample) {
       default:
-      case 1:
+      case 8:
         // uint8
         return (value / 255);
-      case 2:
+      case 16:
         // int16 -> uint16
         return ((value + 32768) / 65535);
     }
