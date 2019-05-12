@@ -9,14 +9,14 @@ describe("8 bit stereo samples", () => {
   let sampleCount;
   const getValues = byteHex => byteHex.split(" ").map(v => parseInt(v, 16));
   beforeAll(() => {
-    const file = path.join(__dirname, "../samples/hello.wav");
+    const file = path.join(__dirname, "../samples/8-bit-8000hz-mono-01.wav");
     reader = new RiffWaveReader(new Reader(file));
     return reader.readChunks().then(({ data }) => {
       sampleCount = data.sampleCount;
     });
   });
   describe("at start", () => {
-    const values = getValues("7F 80 80 7E 7F 80 7F 7F 81 81 80 7E 7E 80 81 81");
+    const values = getValues("80 A2 C1 D8 E4 E5 D9 C3 A5 83 60 41 29 1C 1A 24");
     for (let i = 0; i < values.length; i++) {
       it(`reads sample ${i}`, () =>
         reader.readSample(mono, i).then(actualValue => {
@@ -25,7 +25,7 @@ describe("8 bit stereo samples", () => {
     }
   });
   describe("at end", () => {
-    const values = getValues("81 81 81 80 80 80 7F 7F 7E 7E 7E 7E 7E 7E 7E 7E");
+    const values = getValues("C6 DB E5 E3 D6 BE 9F 7C 5A 3C 26 1A 1B 27 3E 5D");
     for (let i = 0; i < values.length; i++) {
       it(`reads sample ${sampleCount - values.length + i}`, () =>
         reader
