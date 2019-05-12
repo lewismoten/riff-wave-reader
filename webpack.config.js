@@ -4,7 +4,7 @@ const base = {
   mode: "production",
   entry: "./src/index.js",
   output: {
-    library: "RiffWaveReader",
+    library: "riff-wave-reader",
     libraryTarget: "umd",
     filename: "riff-wave-reader.js",
     path: "what is this??"
