@@ -29,16 +29,13 @@ const descriptors = {
     id: "data",
     size: 4273,
     start: 44,
-    sampleCount: 4265,
-    duration: 0.533125
+    sampleCount: 4273,
+    duration: 0.534125
   }
 };
 // Unsigned Bytes got abovee 127
 const firstValue = 127;
 const secondValue = 128;
-const lastValue = 127;
-const penultimateValue = 127;
-const penultimate2Value = 128;
 
 describe("riff-wave-reader", () => {
   it("is function", () => {
@@ -78,12 +75,6 @@ describe("riff-wave-reader", () => {
           done();
         });
       });
-      it("reads first channels first sample", done => {
-        reader.readSample(0, 0).then(sample => {
-          expect(sample).toBe(0x7f);
-          done();
-        });
-      });
     });
     describe("Reader Array", () => {
       let reader;
@@ -107,12 +98,6 @@ describe("riff-wave-reader", () => {
           done();
         });
       });
-      it("reads first channels first sample", done => {
-        reader.readSample(0, 0).then(sample => {
-          expect(sample).toBe(0x7f);
-          done();
-        });
-      });
     });
     describe("Raw Array", () => {
       let reader;
@@ -133,12 +118,6 @@ describe("riff-wave-reader", () => {
       it("reads descriptors", done => {
         reader.readChunks().then(chunks => {
           expect(chunks).toEqual(descriptors);
-          done();
-        });
-      });
-      it("reads first channels first sample", done => {
-        reader.readSample(0, 0).then(sample => {
-          expect(sample).toBe(firstValue);
           done();
         });
       });
@@ -275,63 +254,6 @@ describe("riff-wave-reader", () => {
       expect(dataHeader.start).toBe(
         riffHeaderSize + formatHeaderSize + dataHeaderSize
       );
-    });
-  });
-  describe("Sample", () => {
-    const channel = 0;
-    it("can read first sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      reader
-        .readSample(channel, 0)
-        .then(sample => {
-          expect(sample).toBe(firstValue);
-        })
-        .then(done);
-    });
-    it("can read second sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      reader
-        .readSample(channel, 1)
-        .then(sample => {
-          expect(sample).toBe(secondValue);
-        })
-        .then(done);
-    });
-    it("can read last sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      // 81 81 81 81 80 80 80 7F [7F] 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ data }) => {
-        reader
-          .readSample(channel, data.sampleCount - 1)
-          .then(sample => {
-            expect(sample).toBe(lastValue);
-          })
-          .then(done);
-      });
-    });
-    it("can read penultimate sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ data }) => {
-        reader
-          .readSample(channel, data.sampleCount - 2)
-          .then(sample => {
-            expect(sample).toBe(penultimateValue);
-          })
-          .then(done);
-      });
-    });
-    it("can read penultimate2 sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      // 81 81 81 81 80 80 80 [7F] 7F 7E 7E 7E 7E 7E 7E 7E 7E .. .. ..
-      reader.readChunks().then(({ data }) => {
-        reader
-          .readSample(channel, data.sampleCount - 3)
-          .then(sample => {
-            expect(sample).toBe(penultimate2Value);
-          })
-          .then(done);
-      });
     });
   });
 });

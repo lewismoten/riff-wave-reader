@@ -83,21 +83,19 @@ The chunks would be written out as:
 ## Web Browser
 
 ```html
-<script type="text/javascript">
-  window.exports = {};
-</script>
 <script src="riff-wave-reader.js" type="text/javascript"></script>
 <input type="file" change="changeFile(this.files)" />
 <script type="text/javascript">
   function changeFile(files) {
     const fileReader = new FileReader();
     fileReader.onload = function(e) {
-      var riffReader = new window.exports.RiffWaveReader(e.target.result);
+      var RiffWaveReader = window["riff-wave-reader"].RiffWaveReader;
+      var riffReader = new RiffWaveReader(e.target.result);
       riffReader.readChunks().then(function(chunks) {
         console.log(chunks);
       });
     };
-    fileReader.readAsArrayBuffer(blob);
+    fileReader.readAsArrayBuffer(files[0]);
   }
 </script>
 ```

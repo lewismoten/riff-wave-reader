@@ -1,13 +1,12 @@
 {
   "name": "riff-wave-reader",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.",
-  "keywords": "wave,wav,sound,audio,music,8bit,pcm,riff,8-bit",
+  "keywords": "wave,wav,sound,audio,music,8bit,pcm,riff,8-bit,16-bit",
   "main": "./lib/index.js",
   "scripts": {
     "test": "babel-node spec/run.js",
-    "build": "babel src --out-dir ./lib --source-maps",
-    "postbuild": "babel src/index.js --out-file ./docs/riff-wave-reader.js --source-maps inline",
+    "build": "webpack",
     "start": "node ./scripts/start.js"
   },
   "repository": {
@@ -28,6 +27,8 @@
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
     "husky": "^2.2.0",
-    "jasmine": "^3.4.0"
+    "jasmine": "^3.4.0",
+    "webpack": "^4.31.0",
+    "webpack-cli": "^3.3.2"
   }
 }
