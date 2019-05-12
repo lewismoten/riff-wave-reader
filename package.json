@@ -3,7 +3,7 @@
   "version": "0.3.2",
   "description": "This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.",
   "keywords": "wave,wav,sound,audio,music,8bit,pcm,riff,8-bit,16-bit",
-  "main": "./lib/index.js",
+  "main": "./lib/riff-wave-reader.js",
   "files": [
     "/lib"
   ],
