@@ -9,7 +9,7 @@ describe("16 bit mono samples", () => {
   let sampleCount;
   const getValues = byteHex => byteHex.split(" ").map(v => parseInt(v, 16));
   beforeAll(() => {
-    const file = path.join(__dirname, "../samples/8-bit-8000hz-mono-01.wav");
+    const file = path.join(__dirname, "../samples/16-bit-4khz-mono-01.wav");
     reader = new RiffWaveReader(new Reader(file));
     return reader.readChunks().then(({ data }) => {
       sampleCount = data.sampleCount;
