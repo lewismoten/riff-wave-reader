@@ -1,21 +1,26 @@
 # verify with: npm pack --dry-run
 
 # raw source code
-src
+/src
 
 # documentation / demo
 docs
+
+# Templates
+/*.md
+/.github
 
 # tests
 spec
 samples
 
-# git (README.sample)
-/.git/hooks
+# git
+/.git
 
 # build
 .travis.yml
 lib/*.map
+webpack.config.js
 
 # debug
 scripts
