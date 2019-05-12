@@ -1,5 +1,3 @@
-window.exports = {};
-
 window.addEventListener("load", onLoad);
 
 var input;
@@ -11,7 +9,7 @@ var canvases = [];
 var RiffWaveReader;
 
 function onLoad() {
-  RiffWaveReader = window.exports.RiffWaveReader;
+  RiffWaveReader = window["riff-wave-reader"].RiffWaveReader;
   input = document.getElementById("file");
   audio = document.getElementById("audio");
   blobLog = document.getElementById("blobLog");
