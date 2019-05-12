@@ -6,8 +6,8 @@ const base = {
   output: {
     library: "riff-wave-reader",
     libraryTarget: "umd",
-    filename: "riff-wave-reader.js",
-    path: "what is this??"
+    globalObject: "this",
+    filename: "riff-wave-reader.js"
   }
 }
 

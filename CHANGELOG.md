@@ -2,6 +2,14 @@
 
 # 0.3
 
+## 0.3.4: May 12, 2019
+
+- Fix node support
+
+## 0.3.3: May 12, 2019
+
+- Fixed main entry file
+
 ## 0.3.2: May 12, 2019
 
 - GH-2 Fixed signed/unsigned conversions
