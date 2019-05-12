@@ -4,6 +4,9 @@
   "description": "This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.",
   "keywords": "wave,wav,sound,audio,music,8bit,pcm,riff,8-bit,16-bit",
   "main": "./lib/index.js",
+  "files": [
+    "/lib"
+  ],
   "scripts": {
     "test": "babel-node spec/run.js",
     "build": "webpack",
