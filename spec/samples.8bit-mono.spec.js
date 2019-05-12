@@ -3,7 +3,7 @@ import Reader from "../src/reader.js";
 
 import path from "path";
 
-describe("8 bit stereo samples", () => {
+describe("8 bit mono samples", () => {
   const mono = 0;
   let reader;
   let sampleCount;
