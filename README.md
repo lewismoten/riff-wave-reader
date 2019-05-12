@@ -95,7 +95,7 @@ The chunks would be written out as:
         console.log(chunks);
       });
     };
-    fileReader.readAsArrayBuffer(blob);
+    fileReader.readAsArrayBuffer(files[0]);
   }
 </script>
 ```
