@@ -1,12 +1,14 @@
+# Version 0
+
+# 0.3
+
+## 0.3.2: May 12, 2019
+
 - GH-2 Fixed signed/unsigned conversions
 - GH-2 Support 16-bit
 - GH-2 Use webpack to make browser-friendly
 - GH-15 Test 8-bit 16khz
 - GH-4 Get stereo working, read array buffer as unsigned bytes
-
-# Version 0
-
-# 0.3
 
 ## 0.3.1: May 9, 2019
 
