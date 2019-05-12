@@ -7,7 +7,6 @@ describe("16 bit mono samples", () => {
   const mono = 0;
   let reader;
   let sampleCount;
-  const getValues = byteHex => byteHex.split(" ").map(v => parseInt(v, 16));
   beforeAll(() => {
     const file = path.join(__dirname, "../samples/16-bit-4khz-mono-01.wav");
     reader = new RiffWaveReader(new Reader(file));
@@ -16,7 +15,24 @@ describe("16 bit mono samples", () => {
     });
   });
   describe("at start", () => {
-    const values = getValues("80 A2 C1 D8 E4 E5 D9 C3 A5 83 60 41 29 1C 1A 24");
+    const values = [
+      0,
+      16710,
+      25749,
+      22973,
+      9651,
+      -8103,
+      -22131,
+      -26010,
+      -17944,
+      -1645,
+      15406,
+      25393,
+      23718,
+      11164,
+      -6522,
+      -21207
+    ];
     for (let i = 0; i < values.length; i++) {
       it(`reads sample ${i}`, () =>
         reader.readSample(mono, i).then(actualValue => {
@@ -25,7 +41,24 @@ describe("16 bit mono samples", () => {
     }
   });
   describe("at end", () => {
-    const values = getValues("C6 DB E5 E3 D6 BE 9F 7C 5A 3C 26 1A 1B 27 3E 5D");
+    const values = [
+      26161,
+      21211,
+      6515,
+      -11159,
+      -23720,
+      -25392,
+      -15406,
+      1644,
+      17946,
+      26007,
+      22134,
+      8100,
+      -9650,
+      -22971,
+      -25752,
+      -16707
+    ];
     for (let i = 0; i < values.length; i++) {
       it(`reads sample ${sampleCount - values.length + i}`, () =>
         reader
