@@ -75,12 +75,6 @@ describe("riff-wave-reader", () => {
           done();
         });
       });
-      it("reads first channels first sample", done => {
-        reader.readSample(0, 0).then(sample => {
-          expect(sample).toBe(0x7f);
-          done();
-        });
-      });
     });
     describe("Reader Array", () => {
       let reader;
@@ -104,12 +98,6 @@ describe("riff-wave-reader", () => {
           done();
         });
       });
-      it("reads first channels first sample", done => {
-        reader.readSample(0, 0).then(sample => {
-          expect(sample).toBe(0x7f);
-          done();
-        });
-      });
     });
     describe("Raw Array", () => {
       let reader;
@@ -130,12 +118,6 @@ describe("riff-wave-reader", () => {
       it("reads descriptors", done => {
         reader.readChunks().then(chunks => {
           expect(chunks).toEqual(descriptors);
-          done();
-        });
-      });
-      it("reads first channels first sample", done => {
-        reader.readSample(0, 0).then(sample => {
-          expect(sample).toBe(firstValue);
           done();
         });
       });
@@ -273,46 +255,5 @@ describe("riff-wave-reader", () => {
         riffHeaderSize + formatHeaderSize + dataHeaderSize
       );
     });
-  });
-  describe("Sample", () => {
-    const channel = 0;
-    it("can read first sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      reader
-        .readSample(channel, 0)
-        .then(sample => {
-          expect(sample).toBe(firstValue);
-        })
-        .then(done);
-    });
-    it("can read second sample", done => {
-      const reader = new RiffWaveReader(new Reader(file));
-      reader
-        .readSample(channel, 1)
-        .then(sample => {
-          expect(sample).toBe(secondValue);
-        })
-        .then(done);
-    });
-
-      describe("read last samples", () => {
-        let reader;
-        let sampleCount;
-        const lastSamples = [
-          0x81, 0x81, 0x81, 0x80, 0x80, 0x80, 0x7f, 0x7f,
-          0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e, 0x7e
-        ];
-        beforeAll((done) => {
-          reader = new RiffWaveReader(new Reader(file));
-          return reader.readChunks().then(({ data }) => { sampleCount = data.sampleCount; done()})
-        });
-        for (let i = 0; i < lastSamples.length; i++) {
-          it(`can read last sample ${i + 1} of ${lastSamples.length}`, () => reader
-                  .readSample(channel, sampleCount - lastSamples.length + i)
-                  .then(actualValue => {
-                    expect(actualValue).toBe(lastSamples[i]);
-                  }));
-        }
-      })
   });
 });
