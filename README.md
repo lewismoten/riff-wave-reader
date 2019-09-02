@@ -47,7 +47,7 @@ reader.readChunks().then(chunks => {
 });
 reader.readSample(channel, index).then(sample => console.log(sample));
 // 127
-````
+```
 
 The chunks would be written out as:
 
