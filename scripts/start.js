@@ -24,6 +24,15 @@ app.listen(PORT);
 
 console.log(`Website running on port ${PORT}`);
 
+const url = `http://localhost:${PORT}/docs/index.html`;
+const start =
+  process.platform == "darwin"
+    ? "open"
+    : process.platform == "win32"
+    ? "start"
+    : "xdg-open";
+require("child_process").exec(`${start} ${url}`);
+
 const getContentType = ext =>
   ({
     ".js": "text/javascript",
