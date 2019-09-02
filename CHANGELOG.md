@@ -2,6 +2,13 @@
 
 # 0.3
 
+## 0.3.5: September 1, 2019
+
+- GH-47 Document node `start` and `build` scripts
+- Launch web browser to show demo via npm `start` script
+- Resolve cross platform mapping on static local web server
+- Save production source maps as a separate file
+
 ## 0.3.4: May 12, 2019
 
 - Fix node support

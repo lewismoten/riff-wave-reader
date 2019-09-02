@@ -6,7 +6,7 @@
 
 This library reads the data within RIFF file with it's contents formatted as a WAVE file containing PCM data.
 
-[Live Demo ![Example Waveform](./docs/example-waveform.png)](https://lewismoten.github.io/riff-wave-reader/)
+[Live Demo on GitHub ![Example Waveform](./docs/example-waveform.png)](https://lewismoten.github.io/riff-wave-reader/)
 
 # Installation
 
@@ -47,7 +47,7 @@ reader.readChunks().then(chunks => {
 });
 reader.readSample(channel, index).then(sample => console.log(sample));
 // 127
-````
+```
 
 The chunks would be written out as:
 
@@ -99,3 +99,28 @@ The chunks would be written out as:
   }
 </script>
 ```
+
+# Modifications
+
+## Building
+
+Building is done via webpack as a universal module definition (UMD) library.
+
+From terminal
+
+```bash
+npm run build
+```
+
+1. Creates a script in development mode under /docs/dist/riff-wave-reader.js
+1. Creates a script in production mode under /lib/dist/riff-wave-reader.js along with a sourcemap file
+
+## Local Testing
+
+From terminal
+
+```bash
+npm run start
+```
+
+Your web browser will open http://localhost:3000/docs/index.html
