@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require("path");
 
 const base = {
   mode: "production",
@@ -9,7 +9,7 @@ const base = {
     globalObject: "this",
     filename: "riff-wave-reader.js"
   }
-}
+};
 
 module.exports = [
   Object.assign({}, base, {
