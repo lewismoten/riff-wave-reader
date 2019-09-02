@@ -19,7 +19,11 @@ const app = http.createServer((request, response) => {
     }
   });
 });
-app.listen(3000);
+const PORT = 3000;
+app.listen(PORT);
+
+console.log(`Website running on port ${PORT}`);
+
 const getContentType = ext =>
   ({
     ".js": "text/javascript",
