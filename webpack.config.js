@@ -14,6 +14,7 @@ const base = {
 module.exports = [
   Object.assign({}, base, {
     mode: "production",
+    devtool: "source-map",
     output: Object.assign({}, base.output, {
       path: path.resolve(__dirname, "lib")
     })
