@@ -3,7 +3,8 @@ import {
   uint8,
   uint16,
   int16,
-  uint32
+  uint32,
+  int24
 } from "./converter";
 
 const errorRiffTag = "RIFF chunk has wrong tag.";
@@ -46,6 +47,7 @@ export class RiffWaveReader {
           default:
           case 1:return uint8(buffer, 0);
           case 2: return int16(buffer, 0);
+          case 3: return int24(buffer, 0);
         }
 
       });
