@@ -36,12 +36,12 @@ export class RiffWaveReader {
   }
 
   readSample(channel, index) {
-    return this.readChunks().then(({ format, data }) => {
+    return this.readChunks().then(({ format: {sampleSize, bitsPerSample}, data }) => {
       const position =
         data.start +
-        index * format.sampleSize +
-        (channel * format.bitsPerSample) / 8;
-      const size = format.bitsPerSample / 8;
+        index * sampleSize +
+        (channel * bitsPerSample) / 8;
+      const size = bitsPerSample / 8;
       return this._read(position, size).then(buffer => {
         switch(size) {
           default:
