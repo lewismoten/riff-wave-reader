@@ -103,6 +103,9 @@ function showWaveForm(reader, chunks, channel) {
       case 16:
         // int16 -> uint16
         return ((value + 32768) / 65535);
+      case 24:
+        // int24 -> uint24
+        return ((value + 8388608) / 16777214);
     }
   }
 }
