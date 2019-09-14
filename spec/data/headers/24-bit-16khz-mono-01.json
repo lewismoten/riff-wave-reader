@@ -1,0 +1,26 @@
+{
+  "riff": {
+    "tag": "RIFF",
+    "size": 636,
+    "format": "WAVE"
+  },
+  "format": {
+    "id": "fmt ",
+    "size": 16,
+    "type": 1,
+    "channels": 1,
+    "sampleRate": 16000,
+    "byteRate": 48000,
+    "blockAlignment": 3,
+    "bitsPerSample": 24,
+    "typeName": "PCM",
+    "sampleSize": 3
+  },
+  "data": {
+    "id": "data",
+    "size": 600,
+    "start": 44,
+    "sampleCount": 200,
+    "duration": 0.0125
+  }
+}
