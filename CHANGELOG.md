@@ -2,6 +2,9 @@
 
 # 0.3
 
+## 0.3.6: September 13, 2019
+- GH-69 NPM Package / Security alert resolution
+
 ## 0.3.5: September 1, 2019
 
 - GH-47 Document node `start` and `build` scripts
