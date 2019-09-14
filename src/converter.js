@@ -9,13 +9,15 @@ export const uint8 = (source, position) => littleEndianU(source, position, 1);
 export const uint16 = (source, position) => littleEndianU(source, position, 2);
 export const int16 = (source, position) => littleEndian(source, position, 2);
 export const uint32 = (source, position) => littleEndianU(source, position, 4);
+export const int24 = (source, position) => littleEndian(source, position, 3);
 
 export default {
   ascii,
   uint8,
   uint16,
   int16,
-  uint32
+  uint32,
+  int24
 };
 
 const littleEndian = (source, position, length) => {

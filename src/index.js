@@ -3,7 +3,8 @@ import {
   uint8,
   uint16,
   int16,
-  uint32
+  uint32,
+  int24
 } from "./converter";
 
 const errorRiffTag = "RIFF chunk has wrong tag.";
@@ -35,17 +36,18 @@ export class RiffWaveReader {
   }
 
   readSample(channel, index) {
-    return this.readChunks().then(({ format, data }) => {
+    return this.readChunks().then(({ format: {sampleSize, bitsPerSample}, data }) => {
       const position =
         data.start +
-        index * format.sampleSize +
-        (channel * format.bitsPerSample) / 8;
-      const size = format.bitsPerSample / 8;
+        index * sampleSize +
+        (channel * bitsPerSample) / 8;
+      const size = bitsPerSample / 8;
       return this._read(position, size).then(buffer => {
         switch(size) {
           default:
           case 1:return uint8(buffer, 0);
           case 2: return int16(buffer, 0);
+          case 3: return int24(buffer, 0);
         }
 
       });
