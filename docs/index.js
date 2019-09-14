@@ -89,7 +89,7 @@ function showWaveForm(reader, chunks, channel) {
   function readNext(i) {
     return reader.readSample(channel, i).then(function(value) {
       var x = (i / count) * width;
-      var y = getPercent(value) * height;
+      var y = (1 - getPercent(value)) * height;
       ctx.lineTo(x, y);
       if (++i !== count) return readNext(i);
     });
