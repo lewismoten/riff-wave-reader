@@ -2,6 +2,9 @@
 
 # 0.3
 
+## 0.3.7: September 14, 2019
+- GH-8 Support 24-bit
+
 ## 0.3.6: September 13, 2019
 - GH-69 NPM Package / Security alert resolution
 
