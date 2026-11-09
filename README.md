@@ -1,6 +1,5 @@
 # Riff Wave Reader
 
-[![Build Status](https://travis-ci.org/lewismoten/riff-wave-reader.svg?branch=master)](https://travis-ci.org/lewismoten/riff-wave-reader)
 [![npm version](https://badge.fury.io/js/riff-wave-reader.svg)](https://www.npmjs.com/package/riff-wave-reader)
 [![install size](https://packagephobia.now.sh/badge?p=riff-wave-reader)](https://packagephobia.now.sh/result?p=riff-wave-reader)
 
