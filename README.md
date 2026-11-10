@@ -1,3 +1,5 @@
+![riff-wave-reader: WAVE/RIFF audio reader library](docs/images/social-preview.png)
+
 # Riff Wave Reader
 
 [![npm version](https://badge.fury.io/js/riff-wave-reader.svg)](https://www.npmjs.com/package/riff-wave-reader)
